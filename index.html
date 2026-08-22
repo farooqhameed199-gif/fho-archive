@@ -1,103 +1,334 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark"> <!-- Defaults to Dark Mode for that premium hacker vibe -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FHO Premium Course Archive</title>
+    <title>FHO Premium Course Vault</title>
+    <!-- Tailwind CSS with custom config for animations -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(30px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    },
+                    colors: {
+                        brand: {
+                            400: '#34d399',
+                            500: '#10b981',
+                            600: '#059669',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome for High-Quality Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        body {
-            background-color: #f4f7f6;
-            background-image: radial-gradient(at 0% 0%, hsla(160, 100%, 74%, 0.3) 0px, transparent 50%), radial-gradient(at 100% 0%, hsla(190, 100%, 76%, 0.4) 0px, transparent 50%), radial-gradient(at 100% 100%, hsla(240, 100%, 82%, 0.3) 0px, transparent 50%);
-            background-attachment: fixed;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        /* Smooth scrolling and global transitions */
+        html { scroll-behavior: smooth; }
+        body { 
+            transition: background-color 0.5s ease, color 0.5s ease; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.7);
+        
+        /* Glassmorphism Header */
+        .glass-nav {
             backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.9);
-            border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04);
-            transition: transform 0.3s ease;
+            -webkit-backdrop-filter: blur(16px);
         }
-        .glass-card:hover { transform: translateY(-5px); box-shadow: 0 30px 60px rgba(0, 168, 132, 0.1); }
-        .btn-gradient { background: linear-gradient(135deg, #059669, #0d9488); }
-        .btn-gradient:hover { box-shadow: 0 10px 20px -5px rgba(5, 150, 105, 0.5); }
+
+        /* Premium Card Styling (Dark & Light) */
+        .premium-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(10px);
+        }
+        
+        /* Dark Mode Card Specifics */
+        .dark .premium-card {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+        }
+        .dark .premium-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: rgba(16, 185, 129, 0.4);
+            box-shadow: 0 20px 40px -5px rgba(16, 185, 129, 0.2), 0 0 20px rgba(16, 185, 129, 0.1);
+        }
+
+        /* Light Mode Card Specifics */
+        html:not(.dark) .premium-card {
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+        }
+        html:not(.dark) .premium-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: rgba(16, 185, 129, 0.3);
+            box-shadow: 0 20px 40px -5px rgba(16, 185, 129, 0.15);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #10b981; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #059669; }
+
+        /* Search Bar Animation */
+        .search-wrapper:focus-within i { color: #10b981; }
+        
+        /* Hide element initially for staggered animation */
+        .will-animate { opacity: 0; }
     </style>
 </head>
-<body class="min-h-screen text-gray-800 flex flex-col">
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 min-h-screen flex flex-col relative overflow-x-hidden">
 
-    <header class="bg-white/60 backdrop-blur-xl border-b border-white/80 sticky top-0 z-50 shadow-sm p-4">
-        <div class="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-            <div class="flex items-center gap-3">
-                <div class="w-12 h-12 bg-gradient-to-tr from-emerald-500 to-teal-500 rounded-xl flex justify-center items-center text-white text-xl shadow-lg">
-                    <i class="fa-solid fa-robot"></i>
+    <!-- Background Ambient Glow (Visible mostly in dark mode) -->
+    <div class="fixed top-0 left-1/4 w-96 h-96 bg-brand-500/20 rounded-full mix-blend-multiply filter blur-[128px] opacity-50 dark:opacity-30 animate-pulse-slow pointer-events-none z-0"></div>
+    <div class="fixed bottom-0 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full mix-blend-multiply filter blur-[128px] opacity-50 dark:opacity-30 animate-pulse-slow pointer-events-none z-0" style="animation-delay: 1.5s;"></div>
+
+    <!-- Navigation Header -->
+    <header class="glass-nav sticky top-0 z-50 border-b border-slate-200 dark:border-slate-800/50 bg-white/70 dark:bg-slate-950/70 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center py-4 gap-4">
+                
+                <!-- Logo & Brand -->
+                <div class="flex items-center gap-4 cursor-pointer hover:opacity-80 transition-opacity">
+                    <div class="relative group">
+                        <div class="absolute -inset-1 bg-gradient-to-r from-brand-400 to-blue-500 rounded-xl blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
+                        <div class="relative w-12 h-12 bg-gradient-to-tr from-brand-500 to-teal-600 rounded-xl flex justify-center items-center text-white text-2xl shadow-lg ring-1 ring-white/20">
+                            <i class="fa-solid fa-robot animate-float"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-400">
+                            FHO <span class="text-brand-500">Vault</span>
+                        </h1>
+                        <p class="text-xs font-bold text-brand-500 flex items-center gap-1">
+                            <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+                            Live Sync Active
+                        </p>
+                    </div>
                 </div>
-                <div>
-                    <h1 class="text-xl font-extrabold tracking-tight">FHO Course Vault</h1>
-                    <p class="text-xs text-emerald-600 font-bold"><i class="fa-solid fa-circle-check"></i> Live Sync Active</p>
+
+                <!-- Search & Theme Toggle -->
+                <div class="flex items-center gap-4 w-full md:w-auto">
+                    <div class="search-wrapper relative w-full md:w-80 group">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 transition-colors duration-300"></i>
+                        <input type="text" id="searchInput" placeholder="Search premium courses..." class="w-full pl-11 pr-4 py-3 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:bg-white dark:focus:bg-slate-800 focus:outline-none focus:ring-2 ring-brand-500/50 text-sm font-medium transition-all shadow-inner text-slate-800 dark:text-slate-200 placeholder-slate-400">
+                    </div>
+                    
+                    <button onclick="toggleTheme()" class="w-12 h-12 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors shadow-inner ring-1 ring-slate-300 dark:ring-slate-700">
+                        <i id="theme-icon" class="fa-solid fa-moon text-slate-600 dark:text-amber-400 text-lg transition-transform hover:rotate-12"></i>
+                    </button>
                 </div>
-            </div>
-            <div class="w-full md:w-96 relative">
-                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                <input type="text" id="searchInput" placeholder="Search courses..." class="w-full pl-10 pr-4 py-3 rounded-full bg-white/50 border border-white/80 focus:bg-white focus:outline-none focus:ring-2 ring-emerald-500 transition-all text-sm">
             </div>
         </div>
     </header>
 
-    <main class="flex-grow max-w-4xl mx-auto w-full p-4 md:p-8 pb-20">
-        <div id="course-container" class="space-y-6">
-            <p class="text-center text-gray-500 font-bold mt-10"><i class="fa-solid fa-spinner fa-spin"></i> Syncing with FHO Servers...</p>
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-12 z-10">
+        
+        <!-- Hero Section -->
+        <div class="text-center mb-16 animate-fade-in-up">
+            <h2 class="text-4xl md:text-6xl font-black mb-4 tracking-tight">
+                Unlock the <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-400 to-blue-500">Master Archive</span>
+            </h2>
+            <p class="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-medium text-lg">
+                Exclusive tools, premium courses, and secret strategies—synced directly from the FHO WhatsApp Network to this secure vault.
+            </p>
         </div>
+
+        <!-- Dynamic Course Grid -->
+        <div id="course-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Loading State -->
+            <div class="col-span-full flex flex-col items-center justify-center py-20 text-brand-500 animate-pulse">
+                <i class="fa-solid fa-circle-notch fa-spin text-5xl mb-4"></i>
+                <p class="font-bold text-lg tracking-wide uppercase">Decrypting Database...</p>
+            </div>
+        </div>
+        
     </main>
 
-    <a href="https://heylink.me/FarooqHameedOfficial" class="fixed bottom-8 right-8 w-14 h-14 bg-gradient-to-tr from-green-500 to-emerald-600 text-white rounded-full flex items-center justify-center text-3xl shadow-[0_10px_25px_rgba(16,185,129,0.5)] hover:scale-110 transition-transform z-50"><i class="fa-brands fa-whatsapp"></i></a>
+    <!-- Footer -->
+    <footer class="border-t border-slate-200 dark:border-slate-800/50 bg-white/50 dark:bg-slate-950/50 backdrop-blur-lg mt-auto z-10">
+        <div class="max-w-7xl mx-auto px-4 py-8 text-center text-sm font-medium text-slate-500 dark:text-slate-400 flex flex-col items-center gap-2">
+            <p>© 2026 Farooq Hameed Official. All rights reserved.</p>
+            <p>Automated by <span class="text-brand-500 font-bold"><i class="fa-solid fa-bolt"></i> FHO Node Serverless</span></p>
+        </div>
+    </footer>
 
+    <!-- Floating WhatsApp Button -->
+    <a href="https://heylink.me/FarooqHameedOfficial" target="_blank" class="fixed bottom-8 right-8 group z-50">
+        <div class="absolute -inset-2 bg-green-500 rounded-full blur opacity-40 group-hover:opacity-80 transition duration-500 animate-pulse-slow"></div>
+        <div class="relative w-16 h-16 bg-gradient-to-tr from-green-600 to-green-400 text-white rounded-full flex items-center justify-center text-4xl shadow-2xl hover:scale-110 transition-transform duration-300 border-2 border-white/20">
+            <i class="fa-brands fa-whatsapp"></i>
+        </div>
+    </a>
+
+    <!-- Application Logic -->
     <script>
+        // --- THEME MANAGEMENT ---
+        const htmlEl = document.documentElement;
+        const themeIcon = document.getElementById('theme-icon');
+
+        // Check Local Storage for Theme Preference
+        function initTheme() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                htmlEl.classList.add('dark');
+                themeIcon.className = 'fa-solid fa-sun text-amber-400 text-lg transition-transform hover:rotate-12';
+            } else {
+                htmlEl.classList.remove('dark');
+                themeIcon.className = 'fa-solid fa-moon text-slate-600 text-lg transition-transform hover:rotate-12';
+            }
+        }
+
+        function toggleTheme() {
+            if (htmlEl.classList.contains('dark')) {
+                htmlEl.classList.remove('dark');
+                localStorage.theme = 'light';
+                themeIcon.className = 'fa-solid fa-moon text-slate-600 text-lg transition-transform hover:rotate-12';
+            } else {
+                htmlEl.classList.add('dark');
+                localStorage.theme = 'dark';
+                themeIcon.className = 'fa-solid fa-sun text-amber-400 text-lg transition-transform hover:rotate-12';
+            }
+        }
+        
+        initTheme();
+
+        // --- DATA FETCHING & RENDERING ---
         let courses = [];
         
         async function loadCourses() {
             try {
-                // Fetch directly from your GitHub repo!
+                // Fetch from GitHub Repo/Vercel (Adds cache-busting timestamp)
                 const res = await fetch('archive.json?' + new Date().getTime());
-                if (!res.ok) throw new Error('Not found');
+                if (!res.ok) throw new Error('Database not found');
                 courses = await res.json();
                 renderCourses(courses);
             } catch (e) {
-                document.getElementById('course-container').innerHTML = `<p class="text-center text-gray-500 font-bold mt-10">Waiting for the bot to push the first course...</p>`;
+                document.getElementById('course-container').innerHTML = `
+                <div class="col-span-full flex flex-col items-center justify-center py-20 text-slate-500">
+                    <i class="fa-solid fa-satellite-dish text-6xl mb-4 opacity-50"></i>
+                    <p class="font-bold text-xl mb-2">Awaiting Transmission</p>
+                    <p class="text-sm">Waiting for the FHO Bot to push the first course into the vault.</p>
+                </div>`;
             }
+        }
+
+        function getCategoryIcon(category) {
+            const icons = {
+                "Hacking & Security": "fa-user-secret",
+                "Design & Editing": "fa-pen-nib",
+                "Coding & Dev": "fa-code",
+                "Marketing & SEO": "fa-chart-line",
+                "Other": "fa-layer-group"
+            };
+            return icons[category] || "fa-box";
         }
 
         function renderCourses(data) {
             const container = document.getElementById('course-container');
-            if(data.length === 0) return container.innerHTML = `<p class="text-center text-gray-500">No courses found.</p>`;
+            
+            if(data.length === 0) {
+                return container.innerHTML = `
+                <div class="col-span-full text-center py-20 text-slate-500">
+                    <i class="fa-regular fa-folder-open text-6xl mb-4 opacity-50"></i>
+                    <p class="font-bold text-xl">No matching courses found.</p>
+                </div>`;
+            }
             
             let html = '';
-            data.forEach(course => {
+            
+            data.forEach((course, index) => {
+                // Staggered animation delay logic (max 10 delays then loops)
+                const delay = (index % 10) * 100; 
+                const catIcon = getCategoryIcon(course.category);
+
                 html += `
-                <div class="glass-card p-6 md:p-8">
-                    <div class="flex justify-between items-center mb-4 border-b border-gray-200/50 pb-4">
-                        <span class="text-xs font-bold text-gray-500"><i class="fa-solid fa-calendar-days"></i> ${course.date}</span>
-                        <span class="text-[10px] uppercase font-bold tracking-wider bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full"><i class="fa-solid fa-tag"></i> ${course.category}</span>
+                <div class="premium-card rounded-3xl p-1 flex flex-col will-animate animate-fade-in-up" style="animation-delay: ${delay}ms;">
+                    <div class="bg-white/40 dark:bg-slate-900/50 rounded-[22px] p-6 flex flex-col h-full h-full border border-white/50 dark:border-slate-800/50">
+                        
+                        <!-- Top Header: Date & Badge -->
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="flex items-center gap-2 text-xs font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/80 px-3 py-1.5 rounded-full ring-1 ring-slate-200 dark:ring-slate-700">
+                                <i class="fa-regular fa-calendar text-brand-500"></i> ${course.date}
+                            </div>
+                            <div class="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-brand-600 dark:text-brand-400 bg-brand-100 dark:bg-brand-500/10 px-3 py-1.5 rounded-full ring-1 ring-brand-200 dark:ring-brand-500/30">
+                                <i class="fa-solid ${catIcon}"></i> ${course.category}
+                            </div>
+                        </div>
+                        
+                        <!-- Title -->
+                        <h2 class="text-2xl font-black leading-tight text-slate-800 dark:text-white mb-6 flex-grow">
+                            ${course.title}
+                        </h2>
+                        
+                        <!-- Features List -->
+                        <ul class="space-y-3 mb-8 text-sm font-semibold text-slate-600 dark:text-slate-300">
+                            <li class="flex items-center gap-3">
+                                <span class="flex justify-center items-center w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-brand-500 text-xs">
+                                    <i class="fa-solid fa-check"></i>
+                                </span>
+                                Premium Video Modules
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <span class="flex justify-center items-center w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-brand-500 text-xs">
+                                    <i class="fa-solid fa-check"></i>
+                                </span>
+                                FHO Network Certified
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <span class="flex justify-center items-center w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-500 text-xs">
+                                    <i class="fa-solid fa-infinity"></i>
+                                </span>
+                                Lifetime Drive Access
+                            </li>
+                        </ul>
+                        
+                        <!-- Action Button -->
+                        <a href="${course.link}" target="_blank" class="group relative w-full inline-flex items-center justify-center gap-2 overflow-hidden rounded-xl bg-gradient-to-br from-brand-500 to-teal-700 p-4 font-bold text-white shadow-lg shadow-brand-500/30 transition-all hover:scale-[1.02] active:scale-95">
+                            <span class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"></span>
+                            <i class="fa-solid fa-cloud-arrow-down text-lg relative z-10 group-hover:-translate-y-1 transition-transform duration-300"></i>
+                            <span class="relative z-10 tracking-wide uppercase text-sm">Access Course</span>
+                        </a>
+                        
                     </div>
-                    <h2 class="text-xl md:text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-teal-700 to-emerald-600 mb-4">${course.title}</h2>
-                    <div class="bg-white/50 p-4 rounded-xl border border-white mb-6 text-sm text-gray-600 font-medium">
-                        <p class="mb-2"><i class="fa-solid fa-check text-emerald-500"></i> High-Quality Video Modules</p>
-                        <p><i class="fa-solid fa-check text-emerald-500"></i> FHO Network Certified</p>
-                    </div>
-                    <a href="${course.link}" target="_blank" class="btn-gradient inline-block text-white font-bold text-sm px-6 py-3 rounded-full uppercase tracking-wide"><i class="fa-solid fa-cloud-arrow-down"></i> Access Course</a>
                 </div>`;
             });
+            
             container.innerHTML = html;
         }
 
+        // --- SEARCH FUNCTIONALITY ---
         document.getElementById('searchInput').addEventListener('input', (e) => {
             const term = e.target.value.toLowerCase();
-            const filtered = courses.filter(c => c.title.toLowerCase().includes(term) || c.category.toLowerCase().includes(term));
+            const filtered = courses.filter(c => 
+                c.title.toLowerCase().includes(term) || 
+                c.category.toLowerCase().includes(term)
+            );
+            
+            // Re-render with new data (animations will trigger again)
             renderCourses(filtered);
         });
 
+        // Initialize App
         loadCourses();
     </script>
 </body>
