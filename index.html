@@ -359,12 +359,13 @@
             factEl.style.opacity = 0;
             
             try {
-                // Fetching a live programming/tech fact or tip (Filtered for safe, single-line content)
+                // Fetching a live programming/tech fact
                 const response = await fetch('https://v2.jokeapi.dev/joke/Programming?blacklistFlags=nsfw,religious,political,racist,sexist,explicit&type=single');
                 
                 if (!response.ok) throw new Error("API Offline");
                 
-                const data = await res.json();
+                // FIXED TYPO: Changed res.json() to response.json()
+                const data = await response.json(); 
                 
                 setTimeout(() => {
                     // Update the text with the live API result
@@ -373,7 +374,7 @@
                 }, 500); 
                 
             } catch (error) {
-                // If they have no internet (or the API is down), gracefully show an offline tip
+                // If they have no internet, gracefully show an offline tip
                 setTimeout(() => {
                     const randomFallback = offlineFallbacks[Math.floor(Math.random() * offlineFallbacks.length)];
                     factEl.innerText = randomFallback;
@@ -381,12 +382,13 @@
                 }, 500);
             }
         }
-
+        
         // Fetch the first live fact immediately when the page loads
         fetchTechFact();
         
-        // Fetch a new live fact every 12 seconds (gives them enough time to read it)
-        setInterval(fetchTechFact, 12000);
+        // Fetch a new live fact every 10 seconds (gives them enough time to read it)
+        setInterval(fetchTechFact, 10000);
+        
         // 5. TOAST NOTIFICATIONS
         function showToast(message, icon = 'fa-circle-check', color = 'text-brand-500') {
             const container = document.getElementById('toast-container');
