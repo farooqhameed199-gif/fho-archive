@@ -1,10 +1,17 @@
 <!DOCTYPE html>
-<html lang="en" class="dark"> <!-- Defaults to Dark Mode for that premium hacker vibe -->
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FHO Premium Course Vault</title>
-    <!-- Tailwind CSS with custom config for animations -->
+    
+    <!-- 📱 PWA Manifest (Inlined as Data URI for 1-file setup) -->
+    <link rel="manifest" id="manifest-link">
+    <meta name="theme-color" content="#10b981">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Tailwind CSS & Configuration -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -15,6 +22,8 @@
                         'fade-in-up': 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
                         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                         'float': 'float 6s ease-in-out infinite',
+                        'slide-in-right': 'slideInRight 0.3s ease-out forwards',
+                        'shimmer': 'shimmer 1.5s infinite linear'
                     },
                     keyframes: {
                         fadeInUp: {
@@ -24,308 +33,560 @@
                         float: {
                             '0%, 100%': { transform: 'translateY(0)' },
                             '50%': { transform: 'translateY(-10px)' },
+                        },
+                        slideInRight: {
+                            '0%': { opacity: '0', transform: 'translateX(50px)' },
+                            '100%': { opacity: '1', transform: 'translateX(0)' }
+                        },
+                        shimmer: {
+                            '0%': { backgroundPosition: '-1000px 0' },
+                            '100%': { backgroundPosition: '1000px 0' }
                         }
                     },
-                    colors: {
-                        brand: {
-                            400: '#34d399',
-                            500: '#10b981',
-                            600: '#059669',
-                        }
-                    }
+                    colors: { brand: { 400: '#34d399', 500: '#10b981', 600: '#059669' } }
                 }
             }
         }
     </script>
-    <!-- Font Awesome for High-Quality Icons -->
+    
+    <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <style>
-        /* Smooth scrolling and global transitions */
-        html { scroll-behavior: smooth; }
-        body { 
-            transition: background-color 0.5s ease, color 0.5s ease; 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
-        
-        /* Glassmorphism Header */
-        .glass-nav {
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-        }
+    
+    <!-- QR Code Generator Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-        /* Premium Card Styling (Dark & Light) */
-        .premium-card {
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    <style>
+        html { scroll-behavior: smooth; }
+        body { transition: background-color 0.5s ease, color 0.5s ease; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; overflow-x: hidden;}
+        
+        .glass-nav { backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+        .glass-modal { backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+        
+        /* 3D Tilt Card Base */
+        .tilt-card {
+            transition: transform 0.1s ease-out, box-shadow 0.1s ease-out, background 0.3s, border 0.3s;
+            transform-style: preserve-3d;
             backdrop-filter: blur(10px);
         }
         
-        /* Dark Mode Card Specifics */
-        .dark .premium-card {
-            background: linear-gradient(145deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+        /* Skeleton Shimmer Effect */
+        .skeleton {
+            background: #e2e8f0;
+            background-image: linear-gradient(to right, #e2e8f0 0%, #cbd5e1 20%, #e2e8f0 40%, #e2e8f0 100%);
+            background-repeat: no-repeat;
+            background-size: 1000px 100%;
+            animation: shimmer 1.5s infinite linear backwards;
         }
-        .dark .premium-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            border-color: rgba(16, 185, 129, 0.4);
-            box-shadow: 0 20px 40px -5px rgba(16, 185, 129, 0.2), 0 0 20px rgba(16, 185, 129, 0.1);
+        .dark .skeleton {
+            background: #1e293b;
+            background-image: linear-gradient(to right, #1e293b 0%, #334155 20%, #1e293b 40%, #1e293b 100%);
         }
 
-        /* Light Mode Card Specifics */
-        html:not(.dark) .premium-card {
-            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
-        }
-        html:not(.dark) .premium-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            border-color: rgba(16, 185, 129, 0.3);
-            box-shadow: 0 20px 40px -5px rgba(16, 185, 129, 0.15);
-        }
+        /* Typewriter Cursor */
+        .typewriter-cursor { border-right: 3px solid #10b981; animation: blink 0.75s step-end infinite; }
+        @keyframes blink { from, to { border-color: transparent } 50% { border-color: #10b981; } }
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #10b981; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #059669; }
-
-        /* Search Bar Animation */
-        .search-wrapper:focus-within i { color: #10b981; }
-        
-        /* Hide element initially for staggered animation */
-        .will-animate { opacity: 0; }
     </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 min-h-screen flex flex-col relative overflow-x-hidden">
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 min-h-screen flex flex-col relative">
 
-    <!-- Background Ambient Glow (Visible mostly in dark mode) -->
-    <div class="fixed top-0 left-1/4 w-96 h-96 bg-brand-500/20 rounded-full mix-blend-multiply filter blur-[128px] opacity-50 dark:opacity-30 animate-pulse-slow pointer-events-none z-0"></div>
-    <div class="fixed bottom-0 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full mix-blend-multiply filter blur-[128px] opacity-50 dark:opacity-30 animate-pulse-slow pointer-events-none z-0" style="animation-delay: 1.5s;"></div>
+    <!-- Ambient Glow -->
+    <div class="fixed top-0 left-1/4 w-96 h-96 bg-brand-500/20 rounded-full blur-[128px] opacity-50 dark:opacity-30 animate-pulse-slow z-0 pointer-events-none"></div>
+    <div class="fixed bottom-0 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-[128px] opacity-50 dark:opacity-30 animate-pulse-slow z-0 pointer-events-none" style="animation-delay: 1.5s;"></div>
 
     <!-- Navigation Header -->
-    <header class="glass-nav sticky top-0 z-50 border-b border-slate-200 dark:border-slate-800/50 bg-white/70 dark:bg-slate-950/70 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row justify-between items-center py-4 gap-4">
-                
-                <!-- Logo & Brand -->
-                <div class="flex items-center gap-4 cursor-pointer hover:opacity-80 transition-opacity">
-                    <div class="relative group">
-                        <div class="absolute -inset-1 bg-gradient-to-r from-brand-400 to-blue-500 rounded-xl blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
-                        <div class="relative w-12 h-12 bg-gradient-to-tr from-brand-500 to-teal-600 rounded-xl flex justify-center items-center text-white text-2xl shadow-lg ring-1 ring-white/20">
-                            <i class="fa-solid fa-robot animate-float"></i>
-                        </div>
-                    </div>
-                    <div>
-                        <h1 class="text-2xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-400">
-                            FHO <span class="text-brand-500">Vault</span>
-                        </h1>
-                        <p class="text-xs font-bold text-brand-500 flex items-center gap-1">
-                            <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
-                            Live Sync Active
-                        </p>
-                    </div>
+    <header class="glass-nav sticky top-0 z-40 border-b border-slate-200 dark:border-slate-800/50 bg-white/70 dark:bg-slate-950/70 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col md:flex-row justify-between items-center gap-4">
+            
+            <div class="flex items-center gap-4 cursor-pointer" onclick="window.scrollTo(0,0)">
+                <div class="relative w-12 h-12 bg-gradient-to-tr from-brand-500 to-teal-600 rounded-xl flex justify-center items-center text-white text-2xl shadow-lg ring-1 ring-white/20">
+                    <i class="fa-solid fa-robot animate-float"></i>
                 </div>
-
-                <!-- Search & Theme Toggle -->
-                <div class="flex items-center gap-4 w-full md:w-auto">
-                    <div class="search-wrapper relative w-full md:w-80 group">
-                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 transition-colors duration-300"></i>
-                        <input type="text" id="searchInput" placeholder="Search premium courses..." class="w-full pl-11 pr-4 py-3 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:bg-white dark:focus:bg-slate-800 focus:outline-none focus:ring-2 ring-brand-500/50 text-sm font-medium transition-all shadow-inner text-slate-800 dark:text-slate-200 placeholder-slate-400">
-                    </div>
-                    
-                    <button onclick="toggleTheme()" class="w-12 h-12 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors shadow-inner ring-1 ring-slate-300 dark:ring-slate-700">
-                        <i id="theme-icon" class="fa-solid fa-moon text-slate-600 dark:text-amber-400 text-lg transition-transform hover:rotate-12"></i>
-                    </button>
+                <div>
+                    <h1 class="text-2xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-400">FHO <span class="text-brand-500">Vault</span></h1>
+                    <p class="text-xs font-bold text-brand-500 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>Live Sync Active</p>
                 </div>
             </div>
+
+            <!-- Toolbar -->
+            <div class="flex items-center gap-3 w-full md:w-auto">
+                <button onclick="openModal('network-modal')" class="bg-brand-500/10 text-brand-600 dark:text-brand-400 border border-brand-500/30 font-bold px-4 py-2 rounded-full hover:bg-brand-500 hover:text-white transition-all text-sm flex items-center gap-2 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+                    <i class="fa-solid fa-network-wired"></i> Join Network
+                </button>
+                <button onclick="toggleVaultView()" id="btn-vault" class="bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold px-4 py-2 rounded-full hover:bg-slate-300 dark:hover:bg-slate-700 transition-all text-sm flex items-center gap-2 border border-slate-300 dark:border-slate-700">
+                    <i class="fa-solid fa-bookmark"></i> My Vault
+                </button>
+                <div class="bg-slate-200 dark:bg-slate-800 rounded-full p-1 flex border border-slate-300 dark:border-slate-700">
+                    <button onclick="setViewMode('grid')" id="btn-grid" class="w-8 h-8 rounded-full bg-white dark:bg-slate-700 text-brand-500 shadow transition-all"><i class="fa-solid fa-border-all"></i></button>
+                    <button onclick="setViewMode('list')" id="btn-list" class="w-8 h-8 rounded-full text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition-all"><i class="fa-solid fa-list"></i></button>
+                </div>
+                <button onclick="toggleTheme()" class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors border border-slate-300 dark:border-slate-700">
+                    <i id="theme-icon" class="fa-solid fa-moon text-slate-600 dark:text-amber-400"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Search Bar Area with Suggestions -->
+        <div class="max-w-3xl mx-auto px-4 pb-4 relative">
+            <div class="relative w-full group">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand-500 transition-colors"></i>
+                <input type="text" id="searchInput" autocomplete="off" placeholder="Search courses, categories, or keywords..." class="w-full pl-12 pr-4 py-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 ring-brand-500/50 text-slate-800 dark:text-slate-200 shadow-lg text-lg">
+            </div>
+            <!-- Search Suggestions Dropdown -->
+            <ul id="search-suggestions" class="absolute left-4 right-4 mt-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-2xl z-50 hidden max-h-60 overflow-y-auto"></ul>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-12 z-10">
+    <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10 z-10">
         
-        <!-- Hero Section -->
-        <div class="text-center mb-16 animate-fade-in-up">
+        <!-- Typewriter Hero -->
+        <div class="text-center mb-12 animate-fade-in-up">
             <h2 class="text-4xl md:text-6xl font-black mb-4 tracking-tight">
-                Unlock the <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-400 to-blue-500">Master Archive</span>
+                Unlock The <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-400 to-blue-500 typewriter-cursor" id="typewriter">Master Archive</span>
             </h2>
-            <p class="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-medium text-lg">
-                Exclusive tools, premium courses, and secret strategies—synced directly from the FHO WhatsApp Network to this secure vault.
-            </p>
+            <p class="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-medium text-lg">Your offline-ready, auto-syncing vault of premium knowledge.</p>
         </div>
 
-        <!-- Dynamic Course Grid -->
-        <div id="course-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <!-- Loading State -->
-            <div class="col-span-full flex flex-col items-center justify-center py-20 text-brand-500 animate-pulse">
-                <i class="fa-solid fa-circle-notch fa-spin text-5xl mb-4"></i>
-                <p class="font-bold text-lg tracking-wide uppercase">Decrypting Database...</p>
+        <!-- Dynamic Content Grid -->
+        <div id="course-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Skeleton Loaders (Shown before fetch completes) -->
+            <div class="rounded-3xl p-6 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 h-64 flex flex-col justify-between">
+                <div class="w-1/3 h-6 skeleton rounded-full mb-4"></div>
+                <div class="w-3/4 h-8 skeleton rounded mb-2"></div>
+                <div class="w-1/2 h-8 skeleton rounded mb-8"></div>
+                <div class="w-full h-12 skeleton rounded-xl"></div>
+            </div>
+            <div class="rounded-3xl p-6 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 h-64 flex flex-col justify-between hidden md:flex">
+                <div class="w-1/3 h-6 skeleton rounded-full mb-4"></div>
+                <div class="w-3/4 h-8 skeleton rounded mb-2"></div>
+                <div class="w-1/2 h-8 skeleton rounded mb-8"></div>
+                <div class="w-full h-12 skeleton rounded-xl"></div>
+            </div>
+            <div class="rounded-3xl p-6 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 h-64 flex flex-col justify-between hidden lg:flex">
+                <div class="w-1/3 h-6 skeleton rounded-full mb-4"></div>
+                <div class="w-3/4 h-8 skeleton rounded mb-2"></div>
+                <div class="w-1/2 h-8 skeleton rounded mb-8"></div>
+                <div class="w-full h-12 skeleton rounded-xl"></div>
             </div>
         </div>
-        
     </main>
 
-    <!-- Footer -->
-    <footer class="border-t border-slate-200 dark:border-slate-800/50 bg-white/50 dark:bg-slate-950/50 backdrop-blur-lg mt-auto z-10">
-        <div class="max-w-7xl mx-auto px-4 py-8 text-center text-sm font-medium text-slate-500 dark:text-slate-400 flex flex-col items-center gap-2">
-            <p>© 2026 Farooq Hameed Official. All rights reserved.</p>
-            <p>Automated by <span class="text-brand-500 font-bold"><i class="fa-solid fa-bolt"></i> FHO Node Serverless</span></p>
+    <!-- Daily Tech Fact Ticker -->
+    <div class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden relative z-10 py-2">
+        <div class="max-w-7xl mx-auto px-4 flex items-center gap-3">
+            <span class="bg-brand-500 text-white text-xs font-bold px-2 py-1 rounded uppercase tracking-wider whitespace-nowrap"><i class="fa-solid fa-lightbulb"></i> Daily Fact</span>
+            <p id="tech-fact" class="text-sm font-medium text-slate-600 dark:text-slate-400 truncate transition-opacity duration-500">Loading intelligence...</p>
         </div>
-    </footer>
+    </div>
 
-    <!-- Floating WhatsApp Button -->
-    <a href="https://heylink.me/FarooqHameedOfficial" target="_blank" class="fixed bottom-8 right-8 group z-50">
-        <div class="absolute -inset-2 bg-green-500 rounded-full blur opacity-40 group-hover:opacity-80 transition duration-500 animate-pulse-slow"></div>
-        <div class="relative w-16 h-16 bg-gradient-to-tr from-green-600 to-green-400 text-white rounded-full flex items-center justify-center text-4xl shadow-2xl hover:scale-110 transition-transform duration-300 border-2 border-white/20">
-            <i class="fa-brands fa-whatsapp"></i>
+    <!-- Modals Overlay Container -->
+    <div id="modal-overlay" class="fixed inset-0 bg-slate-900/60 glass-modal z-[100] hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300" onclick="closeModals()">
+        
+        <!-- Join Network Modal -->
+        <div id="network-modal" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 w-full max-w-md rounded-3xl p-8 shadow-2xl transform scale-95 transition-transform duration-300 hidden" onclick="event.stopPropagation()">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-brand-100 dark:bg-brand-900/30 text-brand-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-4"><i class="fa-solid fa-network-wired"></i></div>
+                <h3 class="text-2xl font-black dark:text-white">Join The FHO Network</h3>
+                <p class="text-slate-500 text-sm mt-2">Get daily premium courses directly on your phone.</p>
+            </div>
+            <div class="space-y-3">
+                <a href="#" class="flex items-center justify-between p-4 rounded-2xl bg-green-500/10 hover:bg-green-500/20 border border-green-500/20 text-green-700 dark:text-green-400 font-bold transition-colors">
+                    <span class="flex items-center gap-3"><i class="fa-brands fa-whatsapp text-2xl"></i> FHO Main Group</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="#" class="flex items-center justify-between p-4 rounded-2xl bg-green-500/10 hover:bg-green-500/20 border border-green-500/20 text-green-700 dark:text-green-400 font-bold transition-colors">
+                    <span class="flex items-center gap-3"><i class="fa-brands fa-whatsapp text-2xl"></i> FHO Backup Group</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="#" class="flex items-center justify-between p-4 rounded-2xl bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 text-blue-700 dark:text-blue-400 font-bold transition-colors">
+                    <span class="flex items-center gap-3"><i class="fa-brands fa-telegram text-2xl"></i> Telegram Archive</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+            <button onclick="closeModals()" class="w-full mt-6 py-3 font-bold text-slate-500 hover:text-slate-800 dark:hover:text-white">Close</button>
         </div>
-    </a>
+
+        <!-- Quick View Modal -->
+        <div id="quickview-modal" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 w-full max-w-lg rounded-3xl p-6 shadow-2xl transform scale-95 transition-transform duration-300 hidden" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-start mb-4 border-b border-slate-100 dark:border-slate-800 pb-4">
+                <span id="qv-category" class="text-xs font-black uppercase tracking-wider text-brand-500 bg-brand-500/10 px-3 py-1 rounded-full">Category</span>
+                <button onclick="closeModals()" class="text-slate-400 hover:text-red-500 transition-colors"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <h3 id="qv-title" class="text-2xl md:text-3xl font-black text-slate-800 dark:text-white mb-2 leading-tight">Course Title</h3>
+            <p id="qv-date" class="text-sm text-slate-500 mb-6"><i class="fa-regular fa-calendar"></i> Added: Date</p>
+            
+            <div class="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4 mb-6 border border-slate-200 dark:border-slate-700">
+                <ul class="space-y-2 text-sm font-medium text-slate-600 dark:text-slate-300">
+                    <li><i class="fa-solid fa-check text-brand-500 mr-2"></i> Premium Video Modules & Assets</li>
+                    <li><i class="fa-solid fa-check text-brand-500 mr-2"></i> Full Lifetime Access</li>
+                    <li><i class="fa-solid fa-check text-brand-500 mr-2"></i> Synced via FHO Vault Serverless</li>
+                </ul>
+            </div>
+
+            <!-- Action Buttons Grid -->
+            <div class="grid grid-cols-2 gap-3 mb-4">
+                <a id="qv-download" href="#" target="_blank" class="col-span-2 bg-gradient-to-r from-brand-500 to-teal-600 hover:from-brand-600 hover:to-teal-700 text-white font-bold py-4 rounded-xl text-center shadow-lg transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-cloud-arrow-down text-lg"></i> Access Course
+                </a>
+                <button id="qv-copy" class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold py-3 rounded-xl transition-colors flex justify-center items-center gap-2 text-sm">
+                    <i class="fa-solid fa-link"></i> Copy Link
+                </button>
+                <button id="qv-qr" class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold py-3 rounded-xl transition-colors flex justify-center items-center gap-2 text-sm">
+                    <i class="fa-solid fa-qrcode"></i> Show QR
+                </button>
+                <button id="qv-share" class="bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#25D366] font-bold py-3 rounded-xl transition-colors flex justify-center items-center gap-2 text-sm">
+                    <i class="fa-brands fa-whatsapp text-lg"></i> Share
+                </button>
+                <a id="qv-report" href="#" target="_blank" class="bg-red-500/10 hover:bg-red-500/20 text-red-500 font-bold py-3 rounded-xl transition-colors flex justify-center items-center gap-2 text-sm">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Report Dead
+                </a>
+            </div>
+            
+            <!-- QR Code Display Area (Hidden initially) -->
+            <div id="qr-container" class="hidden flex-col items-center justify-center p-4 bg-white rounded-xl mt-4 border border-slate-200">
+                <div id="qrcode"></div>
+                <p class="text-xs text-slate-500 font-bold mt-3 text-center">Scan with phone camera to download directly to your mobile device.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-12 right-4 flex flex-col gap-2 z-[200]"></div>
 
     <!-- Application Logic -->
     <script>
-        // --- THEME MANAGEMENT ---
+        // CONFIGURATION
+        const ADMIN_WA_NUMBER = "923001234567"; // Replace with your actual WhatsApp number for reporting dead links
+        let courses = [];
+        let savedVault = JSON.parse(localStorage.getItem('fho_vault')) || [];
+        let viewMode = 'grid'; // 'grid' or 'list'
+        let showingVaultOnly = false;
+
+        // 1. INLINE PWA MANIFEST & SERVICE WORKER SETUP
+        function initPWA() {
+            // Generate Data URI for manifest
+            const manifest = {
+                "name": "FHO Premium Vault",
+                "short_name": "FHO Vault",
+                "start_url": ".",
+                "display": "standalone",
+                "background_color": "#0f172a",
+                "theme_color": "#10b981",
+                "icons": [{"src": "https://cdn-icons-png.flaticon.com/512/4712/4712139.png", "sizes": "512x512", "type": "image/png"}]
+            };
+            document.getElementById('manifest-link').href = 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifest));
+
+            // Inline Service Worker for Offline Caching
+            if ('serviceWorker' in navigator) {
+                const swCode = `
+                    const CACHE = 'fho-vault-offline-v1';
+                    self.addEventListener('install', e => {
+                        e.waitUntil(caches.open(CACHE).then(c => c.addAll(['/', 'https://cdn.tailwindcss.com', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'])));
+                    });
+                    self.addEventListener('fetch', e => {
+                        e.respondWith(
+                            fetch(e.request).then(res => {
+                                if(e.request.method === 'GET') {
+                                    const resClone = res.clone();
+                                    caches.open(CACHE).then(c => c.put(e.request, resClone));
+                                }
+                                return res;
+                            }).catch(() => caches.match(e.request))
+                        );
+                    });
+                `;
+                const blob = new Blob([swCode], {type: 'application/javascript'});
+                navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(err => console.log("PWA SW failed."));
+            }
+        }
+        initPWA();
+
+        // 2. THEME ENGINE
         const htmlEl = document.documentElement;
         const themeIcon = document.getElementById('theme-icon');
-
-        // Check Local Storage for Theme Preference
         function initTheme() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                htmlEl.classList.add('dark');
-                themeIcon.className = 'fa-solid fa-sun text-amber-400 text-lg transition-transform hover:rotate-12';
+                htmlEl.classList.add('dark'); themeIcon.className = 'fa-solid fa-sun text-amber-400';
             } else {
-                htmlEl.classList.remove('dark');
-                themeIcon.className = 'fa-solid fa-moon text-slate-600 text-lg transition-transform hover:rotate-12';
+                htmlEl.classList.remove('dark'); themeIcon.className = 'fa-solid fa-moon text-slate-600';
             }
         }
-
         function toggleTheme() {
             if (htmlEl.classList.contains('dark')) {
-                htmlEl.classList.remove('dark');
-                localStorage.theme = 'light';
-                themeIcon.className = 'fa-solid fa-moon text-slate-600 text-lg transition-transform hover:rotate-12';
+                htmlEl.classList.remove('dark'); localStorage.theme = 'light';
+                themeIcon.className = 'fa-solid fa-moon text-slate-600';
             } else {
-                htmlEl.classList.add('dark');
-                localStorage.theme = 'dark';
-                themeIcon.className = 'fa-solid fa-sun text-amber-400 text-lg transition-transform hover:rotate-12';
+                htmlEl.classList.add('dark'); localStorage.theme = 'dark';
+                themeIcon.className = 'fa-solid fa-sun text-amber-400';
             }
         }
-        
         initTheme();
 
-        // --- DATA FETCHING & RENDERING ---
-        let courses = [];
-        
+        // 3. TYPEWRITER EFFECT
+        const twWords = ["Hacking...", "Design...", "Coding...", "Marketing..."];
+        let twIndex = 0, twChar = 0, twDeleting = false;
+        function typeWriter() {
+            const el = document.getElementById('typewriter');
+            const current = twWords[twIndex];
+            if(twDeleting) { el.innerText = current.substring(0, twChar - 1); twChar--; } 
+            else { el.innerText = current.substring(0, twChar + 1); twChar++; }
+
+            if(!twDeleting && twChar === current.length) { twDeleting = true; setTimeout(typeWriter, 2000); } 
+            else if(twDeleting && twChar === 0) { twDeleting = false; twIndex = (twIndex + 1) % twWords.length; setTimeout(typeWriter, 500); } 
+            else { setTimeout(typeWriter, twDeleting ? 50 : 100); }
+        }
+        typeWriter();
+
+        // 4. DAILY TECH FACTS
+        const facts = [
+            "The first computer virus was created in 1983 and was called the Elk Cloner.",
+            "CAPTCHA stands for Completely Automated Public Turing test to tell Computers and Humans Apart.",
+            "There are more than 30,000 distinct Linux distributions in the world.",
+            "Python was named after the British comedy troupe Monty Python.",
+            "90% of the world's data has been created in the last two years."
+        ];
+        let factIndex = 0;
+        setInterval(() => {
+            const el = document.getElementById('tech-fact');
+            el.style.opacity = 0;
+            setTimeout(() => {
+                factIndex = (factIndex + 1) % facts.length;
+                el.innerText = facts[factIndex];
+                el.style.opacity = 1;
+            }, 500);
+        }, 8000);
+        document.getElementById('tech-fact').innerText = facts[0];
+
+        // 5. TOAST NOTIFICATIONS
+        function showToast(message, icon = 'fa-circle-check', color = 'text-brand-500') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 animate-slide-in-right`;
+            toast.innerHTML = `<i class="fa-solid ${icon} ${color} text-xl"></i> <span class="font-bold text-sm text-slate-700 dark:text-slate-200">${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateX(50px)'; toast.style.transition = 'all 0.3s'; setTimeout(() => toast.remove(), 300); }, 3000);
+        }
+
+        // 6. MODAL & QUICK VIEW ENGINE
+        const overlay = document.getElementById('modal-overlay');
+        function openModal(id) {
+            overlay.classList.remove('hidden');
+            setTimeout(() => {
+                overlay.classList.remove('opacity-0');
+                document.getElementById(id).classList.remove('hidden');
+                document.getElementById(id).classList.remove('scale-95');
+            }, 10);
+        }
+        function closeModals() {
+            overlay.classList.add('opacity-0');
+            ['network-modal', 'quickview-modal'].forEach(id => {
+                document.getElementById(id).classList.add('scale-95');
+                setTimeout(() => document.getElementById(id).classList.add('hidden'), 300);
+            });
+            setTimeout(() => overlay.classList.add('hidden'), 300);
+        }
+
+        function openQuickView(id) {
+            const c = courses.find(x => x.id === id);
+            if(!c) return;
+            document.getElementById('qv-title').innerText = c.title;
+            document.getElementById('qv-category').innerText = c.category;
+            document.getElementById('qv-date').innerHTML = `<i class="fa-regular fa-calendar mr-1"></i> Added: ${c.date}`;
+            document.getElementById('qv-download').href = c.link;
+            
+            // Setup Copy Link
+            document.getElementById('qv-copy').onclick = () => {
+                navigator.clipboard.writeText(c.link);
+                showToast("Link copied to clipboard!");
+            };
+
+            // Setup WhatsApp Share
+            document.getElementById('qv-share').onclick = () => {
+                const msg = encodeURIComponent(`🔥 Check out this free premium course I found on the FHO Vault!\n\n🧠 *${c.title}*\n🔗 ${c.link}\n\nSearch more at: ${window.location.href}`);
+                window.open(`https://wa.me/?text=${msg}`, '_blank');
+            };
+
+            // Setup Report Dead Link
+            document.getElementById('qv-report').href = `https://wa.me/${ADMIN_WA_NUMBER}?text=${encodeURIComponent(`⚠️ Hey Admin, I am reporting a DEAD LINK in the vault.\n\nCourse: ${c.title}\nLink: ${c.link}`)}`;
+
+            // Setup QR Generator
+            const qrContainer = document.getElementById('qr-container');
+            const qrDiv = document.getElementById('qrcode');
+            qrContainer.classList.add('hidden');
+            document.getElementById('qv-qr').onclick = () => {
+                qrContainer.classList.toggle('hidden');
+                if(!qrContainer.classList.contains('hidden')) {
+                    qrDiv.innerHTML = '';
+                    new QRCode(qrDiv, { text: c.link, width: 160, height: 160, colorDark : "#0f172a", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.H });
+                }
+            };
+
+            openModal('quickview-modal');
+        }
+
+        // 7. FETCH & RENDER ENGINE
         async function loadCourses() {
             try {
-                // Fetch from GitHub Repo/Vercel (Adds cache-busting timestamp)
                 const res = await fetch('archive.json?' + new Date().getTime());
                 if (!res.ok) throw new Error('Database not found');
                 courses = await res.json();
                 renderCourses(courses);
             } catch (e) {
                 document.getElementById('course-container').innerHTML = `
-                <div class="col-span-full flex flex-col items-center justify-center py-20 text-slate-500">
+                <div class="col-span-full text-center py-20 text-slate-500">
                     <i class="fa-solid fa-satellite-dish text-6xl mb-4 opacity-50"></i>
-                    <p class="font-bold text-xl mb-2">Awaiting Transmission</p>
-                    <p class="text-sm">Waiting for the FHO Bot to push the first course into the vault.</p>
+                    <p class="font-bold text-xl mb-2">You're Offline or Database Missing</p>
+                    <p class="text-sm">Please connect to the internet to sync the latest courses.</p>
                 </div>`;
             }
         }
 
-        function getCategoryIcon(category) {
-            const icons = {
-                "Hacking & Security": "fa-user-secret",
-                "Design & Editing": "fa-pen-nib",
-                "Coding & Dev": "fa-code",
-                "Marketing & SEO": "fa-chart-line",
-                "Other": "fa-layer-group"
-            };
-            return icons[category] || "fa-box";
+        function setViewMode(mode) {
+            viewMode = mode;
+            document.getElementById('btn-grid').classList.toggle('bg-white', mode==='grid');
+            document.getElementById('btn-grid').classList.toggle('dark:bg-slate-700', mode==='grid');
+            document.getElementById('btn-list').classList.toggle('bg-white', mode==='list');
+            document.getElementById('btn-list').classList.toggle('dark:bg-slate-700', mode==='list');
+            renderCourses(showingVaultOnly ? courses.filter(c => savedVault.includes(c.id)) : courses);
+        }
+
+        function toggleVaultView() {
+            showingVaultOnly = !showingVaultOnly;
+            const btn = document.getElementById('btn-vault');
+            if(showingVaultOnly) {
+                btn.classList.add('bg-brand-500', 'text-white', 'border-brand-500');
+                btn.classList.remove('bg-slate-200', 'text-slate-700');
+                renderCourses(courses.filter(c => savedVault.includes(c.id)));
+                showToast("Viewing Personal Vault");
+            } else {
+                btn.classList.remove('bg-brand-500', 'text-white', 'border-brand-500');
+                btn.classList.add('bg-slate-200', 'text-slate-700');
+                renderCourses(courses);
+            }
+        }
+
+        function toggleBookmark(e, id) {
+            e.stopPropagation();
+            if(savedVault.includes(id)) {
+                savedVault = savedVault.filter(x => x !== id);
+                showToast("Removed from Vault", "fa-trash", "text-red-500");
+            } else {
+                savedVault.push(id);
+                showToast("Saved to Personal Vault!");
+            }
+            localStorage.setItem('fho_vault', JSON.stringify(savedVault));
+            if(showingVaultOnly) renderCourses(courses.filter(c => savedVault.includes(c.id)));
+            else renderCourses(document.getElementById('searchInput').value ? courses.filter(c => c.title.toLowerCase().includes(document.getElementById('searchInput').value.toLowerCase())) : courses);
+        }
+
+        function initTilt() {
+            if(window.innerWidth < 768) return; // Disable 3D tilt on mobile for performance
+            document.querySelectorAll('.tilt-card').forEach(card => {
+                const inner = card.querySelector('.tilt-inner');
+                card.addEventListener('mousemove', e => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left; const y = e.clientY - rect.top;
+                    const centerX = rect.width / 2; const centerY = rect.height / 2;
+                    const rotateX = ((y - centerY) / centerY) * -8;
+                    const rotateY = ((x - centerX) / centerX) * 8;
+                    inner.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                });
+                card.addEventListener('mouseleave', () => { inner.style.transform = `rotateX(0) rotateY(0)`; });
+            });
         }
 
         function renderCourses(data) {
             const container = document.getElementById('course-container');
             
+            // Handle Grid vs List classes
+            if (viewMode === 'list') {
+                container.className = "flex flex-col gap-4";
+            } else {
+                container.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6";
+            }
+            
             if(data.length === 0) {
-                return container.innerHTML = `
-                <div class="col-span-full text-center py-20 text-slate-500">
-                    <i class="fa-regular fa-folder-open text-6xl mb-4 opacity-50"></i>
-                    <p class="font-bold text-xl">No matching courses found.</p>
-                </div>`;
+                return container.innerHTML = `<div class="col-span-full text-center py-20 text-slate-500"><i class="fa-regular fa-folder-open text-6xl mb-4 opacity-50"></i><p class="font-bold text-xl">No courses found.</p></div>`;
             }
             
             let html = '';
-            
-            data.forEach((course, index) => {
-                // Staggered animation delay logic (max 10 delays then loops)
-                const delay = (index % 10) * 100; 
-                const catIcon = getCategoryIcon(course.category);
-
-                html += `
-                <div class="premium-card rounded-3xl p-1 flex flex-col will-animate animate-fade-in-up" style="animation-delay: ${delay}ms;">
-                    <div class="bg-white/40 dark:bg-slate-900/50 rounded-[22px] p-6 flex flex-col h-full h-full border border-white/50 dark:border-slate-800/50">
-                        
-                        <!-- Top Header: Date & Badge -->
-                        <div class="flex justify-between items-start mb-6">
-                            <div class="flex items-center gap-2 text-xs font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/80 px-3 py-1.5 rounded-full ring-1 ring-slate-200 dark:ring-slate-700">
-                                <i class="fa-regular fa-calendar text-brand-500"></i> ${course.date}
+            data.forEach((course) => {
+                const isSaved = savedVault.includes(course.id);
+                const markIcon = isSaved ? 'fa-solid text-brand-500' : 'fa-regular text-slate-400';
+                
+                if (viewMode === 'grid') {
+                    // GRID VIEW CARD
+                    html += `
+                    <div class="tilt-card cursor-pointer" onclick="openQuickView('${course.id}')">
+                        <div class="tilt-inner bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 h-full flex flex-col shadow-lg transition-transform duration-200">
+                            <div class="flex justify-between items-start mb-4">
+                                <span class="text-[10px] font-black uppercase tracking-wider text-brand-600 dark:text-brand-400 bg-brand-100 dark:bg-brand-500/10 px-3 py-1 rounded-full"><i class="fa-solid fa-tag"></i> ${course.category}</span>
+                                <button onclick="toggleBookmark(event, '${course.id}')" class="text-xl hover:scale-110 transition-transform"><i class="${markIcon} fa-bookmark"></i></button>
                             </div>
-                            <div class="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-brand-600 dark:text-brand-400 bg-brand-100 dark:bg-brand-500/10 px-3 py-1.5 rounded-full ring-1 ring-brand-200 dark:ring-brand-500/30">
-                                <i class="fa-solid ${catIcon}"></i> ${course.category}
+                            <h2 class="text-xl font-black text-slate-800 dark:text-white mb-2 leading-snug flex-grow">${course.title}</h2>
+                            <p class="text-xs text-slate-500 font-bold mb-4"><i class="fa-regular fa-calendar"></i> ${course.date}</p>
+                            <div class="flex items-center text-sm font-bold text-brand-500"><i class="fa-solid fa-play-circle mr-2"></i> View Details & Download</div>
+                        </div>
+                    </div>`;
+                } else {
+                    // LIST VIEW CARD
+                    html += `
+                    <div class="cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 flex items-center justify-between shadow hover:shadow-md transition-shadow group" onclick="openQuickView('${course.id}')">
+                        <div class="flex items-center gap-4 truncate">
+                            <button onclick="toggleBookmark(event, '${course.id}')" class="text-xl hover:scale-110 transition-transform ml-2 shrink-0"><i class="${markIcon} fa-bookmark"></i></button>
+                            <div class="truncate">
+                                <h2 class="text-base font-black text-slate-800 dark:text-white truncate">${course.title}</h2>
+                                <p class="text-xs text-slate-500 font-bold"><span class="text-brand-500 mr-2">${course.category}</span> ${course.date}</p>
                             </div>
                         </div>
-                        
-                        <!-- Title -->
-                        <h2 class="text-2xl font-black leading-tight text-slate-800 dark:text-white mb-6 flex-grow">
-                            ${course.title}
-                        </h2>
-                        
-                        <!-- Features List -->
-                        <ul class="space-y-3 mb-8 text-sm font-semibold text-slate-600 dark:text-slate-300">
-                            <li class="flex items-center gap-3">
-                                <span class="flex justify-center items-center w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-brand-500 text-xs">
-                                    <i class="fa-solid fa-check"></i>
-                                </span>
-                                Premium Video Modules
-                            </li>
-                            <li class="flex items-center gap-3">
-                                <span class="flex justify-center items-center w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-brand-500 text-xs">
-                                    <i class="fa-solid fa-check"></i>
-                                </span>
-                                FHO Network Certified
-                            </li>
-                            <li class="flex items-center gap-3">
-                                <span class="flex justify-center items-center w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-500 text-xs">
-                                    <i class="fa-solid fa-infinity"></i>
-                                </span>
-                                Lifetime Drive Access
-                            </li>
-                        </ul>
-                        
-                        <!-- Action Button -->
-                        <a href="${course.link}" target="_blank" class="group relative w-full inline-flex items-center justify-center gap-2 overflow-hidden rounded-xl bg-gradient-to-br from-brand-500 to-teal-700 p-4 font-bold text-white shadow-lg shadow-brand-500/30 transition-all hover:scale-[1.02] active:scale-95">
-                            <span class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"></span>
-                            <i class="fa-solid fa-cloud-arrow-down text-lg relative z-10 group-hover:-translate-y-1 transition-transform duration-300"></i>
-                            <span class="relative z-10 tracking-wide uppercase text-sm">Access Course</span>
-                        </a>
-                        
-                    </div>
-                </div>`;
+                        <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-brand-500 transition-colors mr-2 shrink-0"></i>
+                    </div>`;
+                }
             });
             
             container.innerHTML = html;
+            if(viewMode === 'grid') initTilt();
         }
 
-        // --- SEARCH FUNCTIONALITY ---
-        document.getElementById('searchInput').addEventListener('input', (e) => {
+        // 8. SEARCH ENGINE & SUGGESTIONS
+        const searchInput = document.getElementById('searchInput');
+        const suggestBox = document.getElementById('search-suggestions');
+        
+        searchInput.addEventListener('input', (e) => {
             const term = e.target.value.toLowerCase();
-            const filtered = courses.filter(c => 
-                c.title.toLowerCase().includes(term) || 
-                c.category.toLowerCase().includes(term)
-            );
+            if(!term) {
+                suggestBox.classList.add('hidden');
+                renderCourses(showingVaultOnly ? courses.filter(c => savedVault.includes(c.id)) : courses);
+                return;
+            }
             
-            // Re-render with new data (animations will trigger again)
+            // Filter Data
+            const filtered = courses.filter(c => c.title.toLowerCase().includes(term) || c.category.toLowerCase().includes(term));
+            
+            // Show Live Suggestions Dropdown
+            if(filtered.length > 0) {
+                let sHtml = '';
+                filtered.slice(0, 5).forEach(c => {
+                    sHtml += `<li onclick="openQuickView('${c.id}'); document.getElementById('search-suggestions').classList.add('hidden');" class="px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer border-b border-slate-100 dark:border-slate-700 flex justify-between items-center"><span class="font-bold text-sm text-slate-700 dark:text-slate-300 truncate">${c.title}</span><i class="fa-solid fa-arrow-right text-xs text-brand-500"></i></li>`;
+                });
+                suggestBox.innerHTML = sHtml;
+                suggestBox.classList.remove('hidden');
+            } else {
+                suggestBox.classList.add('hidden');
+            }
+            
             renderCourses(filtered);
+        });
+
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', (e) => {
+            if(!searchInput.contains(e.target) && !suggestBox.contains(e.target)) suggestBox.classList.add('hidden');
         });
 
         // Initialize App
