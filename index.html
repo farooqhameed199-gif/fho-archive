@@ -343,15 +343,17 @@
         }
         typeWriter();
 
-        // 4. DAILY TECH FACTS & TIPS (Live API Fetch + Offline Fallback)
+        // 4. DAILY FACTS & TECH TIPS (Live Fact API + Offline Fallback)
         const factEl = document.getElementById('tech-fact');
 
-        // A tiny local backup list just in case the user's internet drops (Offline Mode support)
+        // High-quality tech facts & pro-tips for when the user is offline
         const offlineFallbacks = [
-            "Tip: Always double-check your environment variables before deploying.",
-            "Reminder: Use strong, unique passwords and enable 2FA on all accounts.",
-            "Tip: Clear your browser cache if a web app is acting strangely.",
-            "Offline Mode Active: You are browsing securely from your local cache."
+            "Fact: The first 1GB hard drive was announced in 1980 and weighed over 500 pounds.",
+            "Fact: The original name for Windows was 'Interface Manager'.",
+            "Tip: Press Ctrl + Shift + T to reopen the last closed tab in your browser.",
+            "Fact: The first computer mouse was invented in 1964 and was made of wood.",
+            "Tip: Always use a password manager to maintain unique passwords for every site.",
+            "Fact: The Apollo 11 moon landing guidance computer had less processing power than a modern USB-C charger."
         ];
 
         async function fetchTechFact() {
@@ -359,22 +361,21 @@
             factEl.style.opacity = 0;
             
             try {
-                // Fetching a live programming/tech fact
-                const response = await fetch('https://v2.jokeapi.dev/joke/Programming?blacklistFlags=nsfw,religious,political,racist,sexist,explicit&type=single');
+                // Fetching a live random fact from a public Free Fact API
+                const response = await fetch('https://uselessfacts.jsph.pl/api/v2/facts/random');
                 
                 if (!response.ok) throw new Error("API Offline");
                 
-                // FIXED TYPO: Changed res.json() to response.json()
                 const data = await response.json(); 
                 
                 setTimeout(() => {
-                    // Update the text with the live API result
-                    factEl.innerText = data.joke;
+                    // Update the text with the live API result (added "Fact: " prefix)
+                    factEl.innerText = "Fact: " + data.text;
                     factEl.style.opacity = 1; // Fade it back in
                 }, 500); 
                 
             } catch (error) {
-                // If they have no internet, gracefully show an offline tip
+                // If they have no internet, gracefully show a high-quality offline tech fact
                 setTimeout(() => {
                     const randomFallback = offlineFallbacks[Math.floor(Math.random() * offlineFallbacks.length)];
                     factEl.innerText = randomFallback;
@@ -382,12 +383,12 @@
                 }, 500);
             }
         }
-        
+
         // Fetch the first live fact immediately when the page loads
         fetchTechFact();
         
-        // Fetch a new live fact every 10 seconds (gives them enough time to read it)
-        setInterval(fetchTechFact, 10000);
+        // Fetch a new live fact every 12 seconds
+        setInterval(fetchTechFact, 12000);
         
         // 5. TOAST NOTIFICATIONS
         function showToast(message, icon = 'fa-circle-check', color = 'text-brand-500') {
