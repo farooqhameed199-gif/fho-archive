@@ -5,11 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FHO Premium Course Vault</title>
     
-    <!-- 📱 PWA Manifest (Inlined as Data URI for 1-file setup) -->
+    <!-- 📱 PWA Manifest -->
     <link rel="manifest" id="manifest-link">
     <meta name="theme-color" content="#10b981">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Premium Font: Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
 
     <!-- Tailwind CSS & Configuration -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -18,9 +23,10 @@
             darkMode: 'class',
             theme: {
                 extend: {
+                    fontFamily: { sans: ['Outfit', 'sans-serif'] },
                     animation: {
                         'fade-in-up': 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                         'float': 'float 6s ease-in-out infinite',
                         'slide-in-right': 'slideInRight 0.3s ease-out forwards',
                         'shimmer': 'shimmer 1.5s infinite linear'
@@ -43,7 +49,7 @@
                             '100%': { backgroundPosition: '1000px 0' }
                         }
                     },
-                    colors: { brand: { 400: '#34d399', 500: '#10b981', 600: '#059669' } }
+                    colors: { brand: { 400: '#00f0ff', 500: '#00d4ff', 600: '#00a3cc' } }
                 }
             }
         }
@@ -57,78 +63,130 @@
 
     <style>
         html { scroll-behavior: smooth; }
-        body { transition: background-color 0.5s ease, color 0.5s ease; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; overflow-x: hidden;}
+        body { transition: background-color 0.5s ease, color 0.5s ease; overflow-x: hidden;}
         
-        .glass-nav { backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
-        .glass-modal { backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+        /* PREMIUM GLASSMORPHISM EFFECTS */
+        .glass-nav { 
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(24px); 
+            -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .dark .glass-nav {
+            background: rgba(5, 5, 5, 0.6);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+        }
+        .dark .glass-card {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .glass-modal { 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px); 
+            background: rgba(0,0,0,0.6);
+        }
         
+        .stat-badge {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        .dark .stat-badge {
+            background: rgba(0, 240, 255, 0.05);
+            border: 1px solid rgba(0, 240, 255, 0.1);
+        }
+
         /* 3D Tilt Card Base */
         .tilt-card {
-            transition: transform 0.1s ease-out, box-shadow 0.1s ease-out, background 0.3s, border 0.3s;
+            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
             transform-style: preserve-3d;
-            backdrop-filter: blur(10px);
         }
         
         /* Skeleton Shimmer Effect */
         .skeleton {
-            background: #e2e8f0;
-            background-image: linear-gradient(to right, #e2e8f0 0%, #cbd5e1 20%, #e2e8f0 40%, #e2e8f0 100%);
+            background: rgba(255, 255, 255, 0.2);
+            background-image: linear-gradient(to right, transparent 0%, rgba(255,255,255,0.4) 20%, transparent 40%, transparent 100%);
             background-repeat: no-repeat;
             background-size: 1000px 100%;
             animation: shimmer 1.5s infinite linear backwards;
         }
         .dark .skeleton {
-            background: #1e293b;
-            background-image: linear-gradient(to right, #1e293b 0%, #334155 20%, #1e293b 40%, #1e293b 100%);
+            background: rgba(255, 255, 255, 0.02);
+            background-image: linear-gradient(to right, transparent 0%, rgba(255,255,255,0.08) 20%, transparent 40%, transparent 100%);
         }
 
         /* Typewriter Cursor */
-        .typewriter-cursor { border-right: 3px solid #10b981; animation: blink 0.75s step-end infinite; }
-        @keyframes blink { from, to { border-color: transparent } 50% { border-color: #10b981; } }
+        .typewriter-cursor { border-right: 3px solid var(--accent-cyan); animation: blink 0.75s step-end infinite; }
+        @keyframes blink { from, to { border-color: transparent } 50% { border-color: #00f0ff; } }
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #10b981; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #059669; }
-
-        /* Scratch Card Canvas */
-        #scratch-pad { touch-action: none; transition: opacity 0.5s ease; }
+        ::-webkit-scrollbar-thumb { background: #00d4ff; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #00a3cc; }
     </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 min-h-screen flex flex-col relative">
+<body class="bg-slate-50 dark:bg-[#050505] text-slate-800 dark:text-slate-200 min-h-screen flex flex-col relative">
 
-    <!-- Ambient Glow -->
-    <div class="fixed top-0 left-1/4 w-96 h-96 bg-brand-500/20 rounded-full blur-[128px] opacity-50 dark:opacity-30 animate-pulse-slow z-0 pointer-events-none"></div>
-    <div class="fixed bottom-0 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-[128px] opacity-50 dark:opacity-30 animate-pulse-slow z-0 pointer-events-none" style="animation-delay: 1.5s;"></div>
+    <!-- Ambient Glow Orbs -->
+    <div class="fixed top-0 left-1/4 w-[40vw] h-[40vw] bg-brand-500/20 rounded-full blur-[120px] opacity-60 dark:opacity-20 animate-pulse-slow z-0 pointer-events-none"></div>
+    <div class="fixed bottom-0 right-1/4 w-[40vw] h-[40vw] bg-purple-500/20 rounded-full blur-[120px] opacity-60 dark:opacity-20 animate-pulse-slow z-0 pointer-events-none" style="animation-delay: 2s;"></div>
 
     <!-- Navigation Header -->
-    <header class="glass-nav sticky top-0 z-40 border-b border-slate-200 dark:border-slate-800/50 bg-white/70 dark:bg-slate-950/70 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col md:flex-row justify-between items-center gap-4">
+    <header class="glass-nav sticky top-0 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col lg:flex-row justify-between items-center gap-4">
             
-            <div class="flex items-center gap-4 cursor-pointer" onclick="window.scrollTo(0,0)">
-                <div class="relative w-12 h-12 bg-gradient-to-tr from-brand-500 to-teal-600 rounded-xl flex justify-center items-center text-white text-2xl shadow-lg ring-1 ring-white/20">
-                    <i class="fa-solid fa-robot animate-float"></i>
+            <div class="flex items-center gap-4 cursor-pointer w-full lg:w-auto justify-between lg:justify-start" onclick="window.scrollTo(0,0)">
+                <div class="flex items-center gap-4">
+                    <div class="relative w-12 h-12 bg-gradient-to-tr from-brand-500 to-purple-600 rounded-xl flex justify-center items-center text-white text-2xl shadow-lg ring-1 ring-white/20">
+                        <i class="fa-solid fa-gem animate-float"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-400">FHO <span class="text-brand-500">Vault</span></h1>
+                        <p class="text-xs font-bold text-brand-500 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>Premium Access</p>
+                    </div>
                 </div>
-                <div>
-                    <h1 class="text-2xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-400">FHO <span class="text-brand-500">Vault</span></h1>
-                    <p class="text-xs font-bold text-brand-500 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>Live Sync Active</p>
+                
+                <!-- Mobile Global Stats -->
+                <div class="flex lg:hidden gap-2 text-xs">
+                    <div class="stat-badge px-3 py-1 rounded-full text-brand-500 font-bold"><i class="fa-solid fa-eye"></i> <span id="dailyVisitsMobile">...</span></div>
                 </div>
             </div>
 
-            <!-- Toolbar -->
-            <div class="flex items-center gap-3 w-full md:w-auto">
-                <button onclick="openModal('network-modal')" class="bg-brand-500/10 text-brand-600 dark:text-brand-400 border border-brand-500/30 font-bold px-4 py-2 rounded-full hover:bg-brand-500 hover:text-white transition-all text-sm flex items-center gap-2 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+            <!-- Toolbar & Global Stats -->
+            <div class="flex flex-wrap items-center justify-center gap-3 w-full lg:w-auto">
+                <!-- Desktop Global Stats -->
+                <div class="hidden lg:flex gap-3 text-sm mr-4">
+                    <div class="stat-badge px-4 py-2 rounded-full flex items-center gap-2">
+                        <i class="fa-solid fa-eye text-brand-500"></i> Today: <span id="dailyVisits" class="font-black text-brand-500">...</span>
+                    </div>
+                    <div class="stat-badge px-4 py-2 rounded-full flex items-center gap-2">
+                        <i class="fa-solid fa-globe text-purple-500"></i> Lifetime: <span id="lifetimeVisits" class="font-black text-purple-500">...</span>
+                    </div>
+                </div>
+
+                <button onclick="openModal('network-modal')" class="bg-brand-500/10 text-brand-600 dark:text-brand-400 border border-brand-500/30 font-bold px-4 py-2 rounded-full hover:bg-brand-500 hover:text-white transition-all text-sm flex items-center gap-2 shadow-[0_0_15px_rgba(0,212,255,0.2)]">
                     <i class="fa-solid fa-network-wired"></i> Join Network
                 </button>
-                <button onclick="toggleVaultView()" id="btn-vault" class="bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold px-4 py-2 rounded-full hover:bg-slate-300 dark:hover:bg-slate-700 transition-all text-sm flex items-center gap-2 border border-slate-300 dark:border-slate-700">
+                <button onclick="toggleVaultView()" id="btn-vault" class="bg-white/50 dark:bg-slate-800/50 text-slate-700 dark:text-slate-300 font-bold px-4 py-2 rounded-full hover:bg-white dark:hover:bg-slate-700 transition-all text-sm flex items-center gap-2 border border-slate-300/50 dark:border-slate-700">
                     <i class="fa-solid fa-bookmark"></i> My Vault
                 </button>
-                <div class="bg-slate-200 dark:bg-slate-800 rounded-full p-1 flex border border-slate-300 dark:border-slate-700">
+                <div class="bg-white/50 dark:bg-slate-800/50 rounded-full p-1 flex border border-slate-300/50 dark:border-slate-700">
                     <button onclick="setViewMode('grid')" id="btn-grid" class="w-8 h-8 rounded-full bg-white dark:bg-slate-700 text-brand-500 shadow transition-all"><i class="fa-solid fa-border-all"></i></button>
                     <button onclick="setViewMode('list')" id="btn-list" class="w-8 h-8 rounded-full text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition-all"><i class="fa-solid fa-list"></i></button>
                 </div>
-                <button onclick="toggleTheme()" class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors border border-slate-300 dark:border-slate-700">
+                <button onclick="toggleTheme()" class="w-10 h-10 rounded-full bg-white/50 dark:bg-slate-800/50 flex items-center justify-center hover:bg-white dark:hover:bg-slate-700 transition-colors border border-slate-300/50 dark:border-slate-700">
                     <i id="theme-icon" class="fa-solid fa-moon text-slate-600 dark:text-amber-400"></i>
                 </button>
             </div>
@@ -137,61 +195,41 @@
         <!-- Search Bar Area with Suggestions -->
         <div class="max-w-3xl mx-auto px-4 pb-4 relative mt-2">
             <div class="relative w-full group">
-                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand-500 transition-colors"></i>
-                <input type="text" id="searchInput" autocomplete="off" placeholder="Search courses, categories, or keywords..." class="w-full pl-12 pr-4 py-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:outline-none focus:ring-2 ring-brand-500/50 text-slate-800 dark:text-slate-200 shadow-lg text-lg">
+                <i class="fa-solid fa-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand-500 transition-colors"></i>
+                <input type="text" id="searchInput" autocomplete="off" placeholder="Search across 1000+ premium courses..." class="w-full pl-12 pr-4 py-4 rounded-2xl bg-white/60 dark:bg-slate-900/60 backdrop-blur-md border border-slate-200/50 dark:border-slate-700 focus:outline-none focus:ring-2 ring-brand-500/50 text-slate-800 dark:text-slate-200 shadow-lg text-lg transition-all">
             </div>
             <!-- Search Suggestions Dropdown -->
-            <ul id="search-suggestions" class="absolute left-4 right-4 mt-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-2xl z-50 hidden max-h-60 overflow-y-auto"></ul>
+            <ul id="search-suggestions" class="absolute left-4 right-4 mt-2 bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl border border-slate-200 dark:border-slate-700 rounded-xl shadow-2xl z-50 hidden max-h-60 overflow-y-auto"></ul>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 z-10">
+    <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10 z-10">
         
         <!-- Typewriter Hero -->
-        <div class="text-center mb-10 animate-fade-in-up">
+        <div class="text-center mb-12 animate-fade-in-up">
             <h2 class="text-4xl md:text-6xl font-black mb-4 tracking-tight">
-                Unlock The <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-400 to-blue-500 typewriter-cursor" id="typewriter">Master Archive</span>
+                Unlock The <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-400 to-purple-500 typewriter-cursor" id="typewriter">Master Archive</span>
             </h2>
-            <p class="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-medium text-lg mb-2">Your offline-ready, auto-syncing vault of premium knowledge.</p>
-            <p class="text-xs font-bold text-brand-500 uppercase tracking-widest animate-pulse md:hidden flex items-center justify-center gap-2"><i class="fa-solid fa-mobile-screen-button"></i> Shake your phone to hack!</p>
-        </div>
-
-        <!-- 🔥 NEW: SCRATCH-OFF COURSE OF THE DAY -->
-        <div id="scratch-container" class="relative max-w-xl mx-auto mb-16 rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-slate-300 dark:border-slate-700 hidden animate-fade-in-up transform hover:scale-[1.01] transition-transform">
-            <!-- The Hidden Course Underneath -->
-            <div id="cotd-content" class="p-8 bg-white dark:bg-slate-900 text-center flex flex-col items-center justify-center min-h-[220px]">
-                <h3 class="text-brand-500 font-black tracking-widest uppercase text-sm mb-2"><i class="fa-solid fa-crown text-amber-400"></i> Secret Drop Unlocked</h3>
-                <h2 id="cotd-title" class="text-2xl font-black text-slate-800 dark:text-white mb-6">Hidden...</h2>
-                <a id="cotd-link" href="#" target="_blank" class="bg-gradient-to-r from-brand-500 to-teal-600 text-white font-bold py-3 px-8 rounded-xl shadow-[0_10px_20px_rgba(16,185,129,0.3)] hover:scale-105 transition-transform"><i class="fa-solid fa-cloud-arrow-down"></i> Claim Course</a>
-            </div>
-            
-            <!-- The Silver Canvas Overlay to Scratch -->
-            <canvas id="scratch-pad" class="absolute inset-0 w-full h-full cursor-crosshair z-10"></canvas>
-            
-            <!-- Hint overlay (disappears when they start scratching) -->
-            <div id="scratch-hint" class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-20 transition-opacity">
-                <i class="fa-solid fa-hand-pointer text-white text-3xl mb-2 animate-bounce drop-shadow-md"></i>
-                <span class="bg-slate-900/80 text-white font-bold py-2 px-6 rounded-full text-sm animate-pulse shadow-lg backdrop-blur-sm border border-slate-700">Scratch to reveal secret course!</span>
-            </div>
+            <p class="text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-medium text-lg">Your elite, auto-syncing vault of premium knowledge.</p>
         </div>
 
         <!-- Dynamic Content Grid -->
-        <div id="course-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div id="course-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <!-- Skeleton Loaders (Shown before fetch completes) -->
-            <div class="rounded-3xl p-6 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 h-64 flex flex-col justify-between">
+            <div class="glass-card rounded-3xl p-6 h-64 flex flex-col justify-between">
                 <div class="w-1/3 h-6 skeleton rounded-full mb-4"></div>
                 <div class="w-3/4 h-8 skeleton rounded mb-2"></div>
                 <div class="w-1/2 h-8 skeleton rounded mb-8"></div>
                 <div class="w-full h-12 skeleton rounded-xl"></div>
             </div>
-            <div class="rounded-3xl p-6 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 h-64 flex flex-col justify-between hidden md:flex">
+            <div class="glass-card rounded-3xl p-6 h-64 flex flex-col justify-between hidden md:flex">
                 <div class="w-1/3 h-6 skeleton rounded-full mb-4"></div>
                 <div class="w-3/4 h-8 skeleton rounded mb-2"></div>
                 <div class="w-1/2 h-8 skeleton rounded mb-8"></div>
                 <div class="w-full h-12 skeleton rounded-xl"></div>
             </div>
-            <div class="rounded-3xl p-6 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50 h-64 flex flex-col justify-between hidden lg:flex">
+            <div class="glass-card rounded-3xl p-6 h-64 flex flex-col justify-between hidden lg:flex">
                 <div class="w-1/3 h-6 skeleton rounded-full mb-4"></div>
                 <div class="w-3/4 h-8 skeleton rounded mb-2"></div>
                 <div class="w-1/2 h-8 skeleton rounded mb-8"></div>
@@ -201,33 +239,33 @@
     </main>
 
     <!-- Daily Tech Fact Ticker -->
-    <div class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden relative z-10 py-2">
+    <div class="glass-nav relative z-10 py-3 mt-auto">
         <div class="max-w-7xl mx-auto px-4 flex items-center gap-3">
-            <span class="bg-brand-500 text-white text-xs font-bold px-2 py-1 rounded uppercase tracking-wider whitespace-nowrap"><i class="fa-solid fa-lightbulb"></i> Daily Fact</span>
-            <p id="tech-fact" class="text-sm font-medium text-slate-600 dark:text-slate-400 truncate transition-opacity duration-500">Loading intelligence...</p>
+            <span class="bg-gradient-to-r from-brand-500 to-purple-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider whitespace-nowrap"><i class="fa-solid fa-lightbulb"></i> Fact</span>
+            <p id="tech-fact" class="text-sm font-medium text-slate-600 dark:text-slate-300 truncate transition-opacity duration-500">Loading intelligence...</p>
         </div>
     </div>
 
     <!-- Modals Overlay Container -->
-    <div id="modal-overlay" class="fixed inset-0 bg-slate-900/60 glass-modal z-[100] hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300" onclick="closeModals()">
+    <div id="modal-overlay" class="fixed inset-0 glass-modal z-[100] hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300" onclick="closeModals()">
         
         <!-- Join Network Modal -->
-        <div id="network-modal" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 w-full max-w-md rounded-3xl p-8 shadow-2xl transform scale-95 transition-transform duration-300 hidden" onclick="event.stopPropagation()">
+        <div id="network-modal" class="glass-card w-full max-w-md rounded-3xl p-8 shadow-2xl transform scale-95 transition-transform duration-300 hidden" onclick="event.stopPropagation()">
             <div class="text-center mb-6">
-                <div class="w-16 h-16 bg-brand-100 dark:bg-brand-900/30 text-brand-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-4"><i class="fa-solid fa-network-wired"></i></div>
+                <div class="w-16 h-16 bg-brand-500/20 text-brand-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 border border-brand-500/30"><i class="fa-solid fa-network-wired"></i></div>
                 <h3 class="text-2xl font-black dark:text-white">Join The FHO Network</h3>
-                <p class="text-slate-500 text-sm mt-2">Get daily premium courses directly on your phone.</p>
+                <p class="text-slate-500 dark:text-slate-400 text-sm mt-2">Get daily premium courses directly on your phone.</p>
             </div>
             <div class="space-y-3">
-                <a href="https://chat.whatsapp.com/D2wgeEuG36X0pscOqtFnni" class="flex items-center justify-between p-4 rounded-2xl bg-green-500/10 hover:bg-green-500/20 border border-green-500/20 text-green-700 dark:text-green-400 font-bold transition-colors">
+                <a href="https://chat.whatsapp.com/D2wgeEuG36X0pscOqtFnni" class="flex items-center justify-between p-4 rounded-2xl bg-green-500/10 hover:bg-green-500/20 border border-green-500/20 text-green-600 dark:text-green-400 font-bold transition-all">
                     <span class="flex items-center gap-3"><i class="fa-brands fa-whatsapp text-2xl"></i> FHO Main Group</span>
                     <i class="fa-solid fa-arrow-right"></i>
                 </a>
-                <a href="https://chat.whatsapp.com/LoISgJuuitdFT4QZOjpo7B" class="flex items-center justify-between p-4 rounded-2xl bg-green-500/10 hover:bg-green-500/20 border border-green-500/20 text-green-700 dark:text-green-400 font-bold transition-colors">
+                <a href="https://chat.whatsapp.com/LoISgJuuitdFT4QZOjpo7B" class="flex items-center justify-between p-4 rounded-2xl bg-green-500/10 hover:bg-green-500/20 border border-green-500/20 text-green-600 dark:text-green-400 font-bold transition-all">
                     <span class="flex items-center gap-3"><i class="fa-brands fa-whatsapp text-2xl"></i> FHO Backup Group</span>
                     <i class="fa-solid fa-arrow-right"></i>
                 </a>
-                <a href="https://heylink.me/FarooqHameedOfficial" class="flex items-center justify-between p-4 rounded-2xl bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 text-blue-700 dark:text-blue-400 font-bold transition-colors">
+                <a href="https://heylink.me/FarooqHameedOfficial" class="flex items-center justify-between p-4 rounded-2xl bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 text-blue-600 dark:text-blue-400 font-bold transition-all">
                     <span class="flex items-center gap-3"><i class="fa-brands fa-telegram text-2xl"></i> More Links</span>
                     <i class="fa-solid fa-arrow-right"></i>
                 </a>
@@ -236,45 +274,54 @@
         </div>
 
         <!-- Quick View Modal -->
-        <div id="quickview-modal" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 w-full max-w-lg rounded-3xl p-6 shadow-2xl transform scale-95 transition-transform duration-300 hidden" onclick="event.stopPropagation()">
-            <div class="flex justify-between items-start mb-4 border-b border-slate-100 dark:border-slate-800 pb-4">
-                <span id="qv-category" class="text-xs font-black uppercase tracking-wider text-brand-500 bg-brand-500/10 px-3 py-1 rounded-full">Category</span>
+        <div id="quickview-modal" class="glass-card w-full max-w-lg rounded-3xl p-6 md:p-8 shadow-2xl transform scale-95 transition-transform duration-300 hidden flex flex-col max-h-[90vh]" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-start mb-4 border-b border-slate-200/20 pb-4 shrink-0">
+                <span id="qv-category" class="text-xs font-black uppercase tracking-wider text-brand-500 bg-brand-500/10 px-3 py-1 rounded-full border border-brand-500/20">Category</span>
                 <button onclick="closeModals()" class="text-slate-400 hover:text-red-500 transition-colors"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
-            <h3 id="qv-title" class="text-2xl md:text-3xl font-black text-slate-800 dark:text-white mb-2 leading-tight">Course Title</h3>
-            <p id="qv-date" class="text-sm text-slate-500 mb-6"><i class="fa-regular fa-calendar"></i> Added: Date</p>
             
-            <div class="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4 mb-6 border border-slate-200 dark:border-slate-700">
-                <ul class="space-y-2 text-sm font-medium text-slate-600 dark:text-slate-300">
-                    <li><i class="fa-solid fa-check text-brand-500 mr-2"></i> Premium Video Modules & Assets</li>
-                    <li><i class="fa-solid fa-check text-brand-500 mr-2"></i> Full Lifetime Access</li>
-                    <li><i class="fa-solid fa-check text-brand-500 mr-2"></i> Synced via FHO Vault Serverless</li>
-                </ul>
-            </div>
+            <div class="overflow-y-auto pr-2 custom-scrollbar flex-grow">
+                <h3 id="qv-title" class="text-2xl md:text-3xl font-black text-slate-800 dark:text-white mb-2 leading-tight">Course Title</h3>
+                
+                <div class="flex items-center justify-between mb-6">
+                    <p id="qv-date" class="text-sm text-slate-500 font-medium"><i class="fa-regular fa-calendar"></i> Added: Date</p>
+                    <div class="bg-brand-500/10 text-brand-500 border border-brand-500/20 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-2">
+                        <i class="fa-solid fa-fire"></i> <span id="qv-clicks">0</span> Clicks
+                    </div>
+                </div>
+                
+                <div class="bg-slate-100/50 dark:bg-slate-900/50 rounded-2xl p-5 mb-6 border border-slate-200/50 dark:border-slate-700/50">
+                    <ul class="space-y-3 text-sm font-medium text-slate-700 dark:text-slate-300">
+                        <li class="flex items-start gap-3"><i class="fa-solid fa-check-circle text-brand-500 mt-0.5 text-lg"></i> Premium Video Modules & Assets</li>
+                        <li class="flex items-start gap-3"><i class="fa-solid fa-check-circle text-brand-500 mt-0.5 text-lg"></i> Full Lifetime Access</li>
+                        <li class="flex items-start gap-3"><i class="fa-solid fa-check-circle text-brand-500 mt-0.5 text-lg"></i> Synced via FHO Vault Serverless</li>
+                    </ul>
+                </div>
 
-            <!-- Action Buttons Grid -->
-            <div class="grid grid-cols-2 gap-3 mb-4">
-                <a id="qv-download" href="#" target="_blank" class="col-span-2 bg-gradient-to-r from-brand-500 to-teal-600 hover:from-brand-600 hover:to-teal-700 text-white font-bold py-4 rounded-xl text-center shadow-lg transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-cloud-arrow-down text-lg"></i> Access Course
-                </a>
-                <button id="qv-copy" class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold py-3 rounded-xl transition-colors flex justify-center items-center gap-2 text-sm">
-                    <i class="fa-solid fa-link"></i> Copy Link
-                </button>
-                <button id="qv-qr" class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold py-3 rounded-xl transition-colors flex justify-center items-center gap-2 text-sm">
-                    <i class="fa-solid fa-qrcode"></i> Show QR
-                </button>
-                <button id="qv-share" class="bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#25D366] font-bold py-3 rounded-xl transition-colors flex justify-center items-center gap-2 text-sm">
-                    <i class="fa-brands fa-whatsapp text-lg"></i> Share
-                </button>
-                <a id="qv-report" href="#" target="_blank" class="bg-red-500/10 hover:bg-red-500/20 text-red-500 font-bold py-3 rounded-xl transition-colors flex justify-center items-center gap-2 text-sm">
-                    <i class="fa-solid fa-triangle-exclamation"></i> Report Dead
-                </a>
-            </div>
-            
-            <!-- QR Code Display Area (Hidden initially) -->
-            <div id="qr-container" class="hidden flex-col items-center justify-center p-4 bg-white rounded-xl mt-4 border border-slate-200">
-                <div id="qrcode"></div>
-                <p class="text-xs text-slate-500 font-bold mt-3 text-center">Scan with phone camera to download directly to your mobile device.</p>
+                <!-- Action Buttons Grid -->
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <a id="qv-download" href="#" target="_blank" class="col-span-2 bg-gradient-to-r from-brand-500 to-purple-600 hover:from-brand-600 hover:to-purple-700 text-white font-bold py-4 rounded-xl text-center shadow-lg transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-cloud-arrow-down text-xl"></i> Access Premium Course
+                    </a>
+                    <button id="qv-copy" class="bg-white/50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold py-3 rounded-xl transition-colors flex justify-center items-center gap-2 text-sm border border-slate-200/50 dark:border-slate-700">
+                        <i class="fa-solid fa-link"></i> Copy Link
+                    </button>
+                    <button id="qv-qr" class="bg-white/50 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold py-3 rounded-xl transition-colors flex justify-center items-center gap-2 text-sm border border-slate-200/50 dark:border-slate-700">
+                        <i class="fa-solid fa-qrcode"></i> Show QR
+                    </button>
+                    <button id="qv-share" class="bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#25D366] font-bold py-3 rounded-xl transition-colors flex justify-center items-center gap-2 text-sm border border-[#25D366]/20">
+                        <i class="fa-brands fa-whatsapp text-lg"></i> Share
+                    </button>
+                    <a id="qv-report" href="#" target="_blank" class="bg-red-500/10 hover:bg-red-500/20 text-red-500 font-bold py-3 rounded-xl transition-colors flex justify-center items-center gap-2 text-sm border border-red-500/20">
+                        <i class="fa-solid fa-triangle-exclamation"></i> Report Dead
+                    </a>
+                </div>
+                
+                <!-- QR Code Display Area -->
+                <div id="qr-container" class="hidden flex-col items-center justify-center p-6 bg-white rounded-2xl mt-4 border border-slate-200 shadow-inner">
+                    <div id="qrcode"></div>
+                    <p class="text-xs text-slate-500 font-bold mt-4 text-center">Scan with phone camera to open on mobile.</p>
+                </div>
             </div>
         </div>
     </div>
@@ -286,9 +333,10 @@
     <script>
         // CONFIGURATION
         const ADMIN_WA_NUMBER = "923001234567"; // Replace with your actual WhatsApp number
+        const NAMESPACE = 'fhovault_premium_metrics'; // CounterAPI namespace
         let courses = [];
         let savedVault = JSON.parse(localStorage.getItem('fho_vault')) || [];
-        let viewMode = 'grid'; // 'grid' or 'list'
+        let viewMode = 'grid'; 
         let showingVaultOnly = false;
 
         // 1. INLINE PWA MANIFEST & SERVICE WORKER SETUP
@@ -298,22 +346,22 @@
                 "short_name": "FHO Vault",
                 "start_url": ".",
                 "display": "standalone",
-                "background_color": "#0f172a",
-                "theme_color": "#10b981",
+                "background_color": "#050505",
+                "theme_color": "#00d4ff",
                 "icons": [{"src": "https://cdn-icons-png.flaticon.com/512/4712/4712139.png", "sizes": "512x512", "type": "image/png"}]
             };
             document.getElementById('manifest-link').href = 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifest));
 
             if ('serviceWorker' in navigator) {
                 const swCode = `
-                    const CACHE = 'fho-vault-offline-v1';
+                    const CACHE = 'fho-vault-offline-v2';
                     self.addEventListener('install', e => {
                         e.waitUntil(caches.open(CACHE).then(c => c.addAll(['/', 'https://cdn.tailwindcss.com', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'])));
                     });
                     self.addEventListener('fetch', e => {
                         e.respondWith(
                             fetch(e.request).then(res => {
-                                if(e.request.method === 'GET') {
+                                if(e.request.method === 'GET' && !e.request.url.includes('counterapi')) {
                                     const resClone = res.clone();
                                     caches.open(CACHE).then(c => c.put(e.request, resClone));
                                 }
@@ -349,7 +397,59 @@
         }
         initTheme();
 
-        // 3. TYPEWRITER EFFECT
+        // 3. GLOBAL VISITS COUNTER API
+        async function recordGlobalVisits() {
+            const todayDate = new Date().toISOString().split('T')[0];
+            
+            // Lifetime
+            fetch(`https://api.counterapi.dev/v1/${NAMESPACE}/lifetime/up`)
+                .then(res => res.json())
+                .then(data => document.getElementById('lifetimeVisits').innerText = data.count.toLocaleString())
+                .catch(() => {});
+
+            // Daily
+            fetch(`https://api.counterapi.dev/v1/${NAMESPACE}/daily_${todayDate}/up`)
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('dailyVisits').innerText = data.count.toLocaleString();
+                    document.getElementById('dailyVisitsMobile').innerText = data.count.toLocaleString();
+                }).catch(() => {});
+        }
+        recordGlobalVisits();
+
+        // 4. INTERSECTION OBSERVER FOR INDIVIDUAL COURSE CLICKS
+        const clickObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const safeId = entry.target.dataset.courseId;
+                    fetch(`https://api.counterapi.dev/v1/${NAMESPACE}/click_${safeId}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            const el = document.getElementById(`count-val-${safeId}`);
+                            if(el) el.innerText = data.count || 0;
+                        }).catch(() => {});
+                    observer.unobserve(entry.target); // Unobserve after loading to save memory
+                }
+            });
+        }, { rootMargin: "100px" });
+
+        function trackCourseClick(safeId) {
+            // Instant UI update
+            const el = document.getElementById(`count-val-${safeId}`);
+            if(el) {
+                let current = parseInt(el.innerText) || 0;
+                el.innerText = current + 1;
+            }
+            const qvEl = document.getElementById('qv-clicks');
+            if(qvEl) {
+                let current = parseInt(qvEl.innerText) || 0;
+                qvEl.innerText = current + 1;
+            }
+            // API ping
+            fetch(`https://api.counterapi.dev/v1/${NAMESPACE}/click_${safeId}/up`).catch(()=>{});
+        }
+
+        // 5. TYPEWRITER EFFECT
         const twWords = ["Hacking...", "Design...", "Coding...", "Marketing..."];
         let twIndex = 0, twChar = 0, twDeleting = false;
         function typeWriter() {
@@ -364,7 +464,7 @@
         }
         typeWriter();
 
-        // 4. DAILY FACTS & TECH TIPS (Live Fact API + Offline Fallback)
+        // 6. DAILY FACTS & TECH TIPS
         const factEl = document.getElementById('tech-fact');
         const offlineFallbacks = [
             "Fact: The first 1GB hard drive was announced in 1980 and weighed over 500 pounds.",
@@ -388,17 +488,17 @@
         }
         fetchTechFact(); setInterval(fetchTechFact, 12000);
 
-        // 5. TOAST NOTIFICATIONS
+        // 7. TOAST NOTIFICATIONS
         function showToast(message, icon = 'fa-circle-check', color = 'text-brand-500') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
-            toast.className = `bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 animate-slide-in-right`;
+            toast.className = `glass-card px-4 py-3 rounded-xl flex items-center gap-3 animate-slide-in-right`;
             toast.innerHTML = `<i class="fa-solid ${icon} ${color} text-xl"></i> <span class="font-bold text-sm text-slate-700 dark:text-slate-200">${message}</span>`;
             container.appendChild(toast);
             setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateX(50px)'; toast.style.transition = 'all 0.3s'; setTimeout(() => toast.remove(), 300); }, 3000);
         }
 
-        // 6. MODAL & QUICK VIEW ENGINE
+        // 8. MODAL & QUICK VIEW ENGINE
         const overlay = document.getElementById('modal-overlay');
         function openModal(id) {
             overlay.classList.remove('hidden');
@@ -417,13 +517,20 @@
             setTimeout(() => overlay.classList.add('hidden'), 300);
         }
 
-        function openQuickView(id) {
+        function openQuickView(id, safeId) {
             const c = courses.find(x => x.id === id);
             if(!c) return;
             document.getElementById('qv-title').innerText = c.title;
             document.getElementById('qv-category').innerText = c.category;
             document.getElementById('qv-date').innerHTML = `<i class="fa-regular fa-calendar mr-1"></i> Added: ${c.date}`;
             document.getElementById('qv-download').href = c.link;
+            
+            // Sync click counter into modal
+            const el = document.getElementById(`count-val-${safeId}`);
+            document.getElementById('qv-clicks').innerText = el ? el.innerText : '0';
+
+            // Track click when they click download
+            document.getElementById('qv-download').onclick = () => trackCourseClick(safeId);
             
             document.getElementById('qv-copy').onclick = () => { navigator.clipboard.writeText(c.link); showToast("Link copied to clipboard!"); };
             document.getElementById('qv-share').onclick = () => {
@@ -446,126 +553,13 @@
             openModal('quickview-modal');
         }
 
-        // 🔥 NEW: SCRATCH-OFF CARD LOGIC
-        function initScratchCard() {
-            if(courses.length === 0) return;
-            const container = document.getElementById('scratch-container');
-            const canvas = document.getElementById('scratch-pad');
-            const hint = document.getElementById('scratch-hint');
-            const ctx = canvas.getContext('2d');
-            
-            // Pick a random course for the secret drop
-            const secretCourse = courses[Math.floor(Math.random() * courses.length)];
-            document.getElementById('cotd-title').innerText = secretCourse.title;
-            document.getElementById('cotd-link').href = secretCourse.link;
-            
-            container.classList.remove('hidden');
-            
-            // Set exact canvas dimensions
-            canvas.width = container.offsetWidth;
-            canvas.height = container.offsetHeight;
-            
-            // Draw the silver gradient overlay
-            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-            gradient.addColorStop(0, "#94a3b8"); gradient.addColorStop(0.5, "#cbd5e1"); gradient.addColorStop(1, "#94a3b8");
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            // Add scratch text
-            ctx.font = "bold 30px Arial";
-            ctx.fillStyle = "#ffffff";
-            ctx.textAlign = "center";
-            ctx.fillText("SECRET DROP", canvas.width/2, canvas.height/2);
-
-            let isDrawing = false;
-            let strokeCount = 0;
-
-            function getPosition(e) {
-                const rect = canvas.getBoundingClientRect();
-                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                return { x: clientX - rect.left, y: clientY - rect.top };
-            }
-
-            function startScratch(e) { isDrawing = true; scratch(e); hint.style.opacity = '0'; }
-            function stopScratch() { isDrawing = false; }
-            
-            function scratch(e) {
-                if (!isDrawing) return;
-                e.preventDefault();
-                const { x, y } = getPosition(e);
-                ctx.globalCompositeOperation = 'destination-out';
-                ctx.beginPath();
-                ctx.arc(x, y, 40, 0, Math.PI * 2); // 40px brush size
-                ctx.fill();
-                strokeCount++;
-                
-                // If they scratch enough, auto-clear the rest
-                if(strokeCount > 60) {
-                    canvas.style.opacity = '0';
-                    setTimeout(() => canvas.style.pointerEvents = 'none', 500);
-                }
-            }
-
-            canvas.addEventListener('mousedown', startScratch);
-            canvas.addEventListener('mousemove', scratch);
-            canvas.addEventListener('mouseup', stopScratch);
-            canvas.addEventListener('mouseleave', stopScratch);
-            
-            canvas.addEventListener('touchstart', startScratch, {passive: false});
-            canvas.addEventListener('touchmove', scratch, {passive: false});
-            canvas.addEventListener('touchend', stopScratch);
-        }
-
-        // 🔥 NEW: SHAKE TO HACK (Accelerometer)
-        let lastX, lastY, lastZ;
-        let lastShakeTime = 0;
-        const shakeThreshold = 18; // Sensitivity
-
-        window.addEventListener('devicemotion', (e) => {
-            if (!e.accelerationIncludingGravity || courses.length === 0) return;
-            let acc = e.accelerationIncludingGravity;
-            
-            if(lastX !== undefined) {
-                let deltaX = Math.abs(acc.x - lastX);
-                let deltaY = Math.abs(acc.y - lastY);
-                let deltaZ = Math.abs(acc.z - lastZ);
-                
-                if (deltaX + deltaY + deltaZ > shakeThreshold) {
-                    let now = Date.now();
-                    if(now - lastShakeTime > 2000) { // 2 second cooldown
-                        lastShakeTime = now;
-                        triggerShakeHack();
-                    }
-                }
-            }
-            lastX = acc.x; lastY = acc.y; lastZ = acc.z;
-        });
-
-        function triggerShakeHack() {
-            // Flash screen green
-            const flash = document.createElement('div');
-            flash.className = 'fixed inset-0 bg-brand-500 z-[9999] opacity-0 pointer-events-none transition-opacity duration-100 mix-blend-screen';
-            document.body.appendChild(flash);
-            setTimeout(() => flash.style.opacity = '0.7', 10);
-            setTimeout(() => { flash.style.opacity = '0'; setTimeout(() => flash.remove(), 200); }, 150);
-            
-            // Pick random course and unlock it
-            const randomCourse = courses[Math.floor(Math.random() * courses.length)];
-            openQuickView(randomCourse.id);
-            showToast("SYSTEM HACKED! 💥 Random Course Unlocked!", "fa-unlock-keyhole", "text-red-500");
-        }
-
-        // 7. FETCH & RENDER ENGINE
+        // 9. FETCH & RENDER ENGINE
         async function loadCourses() {
             try {
                 const res = await fetch('archive.json?' + new Date().getTime());
                 if (!res.ok) throw new Error('Database not found');
                 courses = await res.json();
                 renderCourses(courses);
-                
-                // Initialize Scratch Card after courses load
-                setTimeout(initScratchCard, 500);
             } catch (e) {
                 document.getElementById('course-container').innerHTML = `
                 <div class="col-span-full text-center py-20 text-slate-500">
@@ -590,12 +584,12 @@
             const btn = document.getElementById('btn-vault');
             if(showingVaultOnly) {
                 btn.classList.add('bg-brand-500', 'text-white', 'border-brand-500');
-                btn.classList.remove('bg-slate-200', 'text-slate-700');
+                btn.classList.remove('bg-white/50', 'text-slate-700', 'dark:bg-slate-800/50');
                 renderCourses(courses.filter(c => savedVault.includes(c.id)));
                 showToast("Viewing Personal Vault");
             } else {
                 btn.classList.remove('bg-brand-500', 'text-white', 'border-brand-500');
-                btn.classList.add('bg-slate-200', 'text-slate-700');
+                btn.classList.add('bg-white/50', 'text-slate-700', 'dark:bg-slate-800/50');
                 renderCourses(courses);
             }
         }
@@ -644,10 +638,10 @@
             let html = '';
             
             data.forEach((course) => {
+                const safeId = (course.title).replace(/[^a-zA-Z0-9]/g, '').substring(0, 30);
                 const isSaved = savedVault.includes(course.id);
                 const markIcon = isSaved ? 'fa-solid text-brand-500' : 'fa-regular text-slate-400';
                 
-                // 🔥 NEW: Check if course was added in the last 24 hours
                 const courseDate = new Date(course.date);
                 const diffTime = Math.abs(now - courseDate);
                 const isNew = diffTime <= (24 * 60 * 60 * 1000); 
@@ -659,39 +653,50 @@
 
                 if (viewMode === 'grid') {
                     html += `
-                    <div class="tilt-card cursor-pointer relative" onclick="openQuickView('${course.id}')">
+                    <div class="tilt-card cursor-pointer relative" onclick="openQuickView('${course.id}', '${safeId}')">
                         ${badgeHtml}
-                        <div class="tilt-inner bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 h-full flex flex-col shadow-lg transition-transform duration-200">
+                        <div class="tilt-inner glass-card rounded-3xl p-6 h-full flex flex-col transition-transform duration-200">
                             <div class="flex justify-between items-start mb-4">
-                                <span class="text-[10px] font-black uppercase tracking-wider text-brand-600 dark:text-brand-400 bg-brand-100 dark:bg-brand-500/10 px-3 py-1 rounded-full"><i class="fa-solid fa-tag"></i> ${course.category}</span>
+                                <span class="text-[10px] font-black uppercase tracking-wider text-brand-600 dark:text-brand-400 bg-brand-500/10 border border-brand-500/20 px-3 py-1 rounded-full"><i class="fa-solid fa-tag"></i> ${course.category}</span>
                                 <button onclick="toggleBookmark(event, '${course.id}')" class="text-xl hover:scale-110 transition-transform"><i class="${markIcon} fa-bookmark"></i></button>
                             </div>
                             <h2 class="text-xl font-black text-slate-800 dark:text-white mb-2 leading-snug flex-grow">${course.title}</h2>
-                            <p class="text-xs text-slate-500 font-bold mb-4"><i class="fa-regular fa-calendar"></i> ${course.date}</p>
-                            <div class="flex items-center text-sm font-bold text-brand-500"><i class="fa-solid fa-play-circle mr-2"></i> View Details & Download</div>
+                            
+                            <div class="flex justify-between items-center mt-4 pt-4 border-t border-slate-200/50 dark:border-slate-700/50">
+                                <p class="text-xs text-slate-500 font-bold"><i class="fa-regular fa-calendar"></i> ${course.date}</p>
+                                <div class="text-brand-500 font-bold text-xs flex items-center gap-1 obs-target" data-course-id="${safeId}">
+                                    <i class="fa-solid fa-fire"></i> <span id="count-val-${safeId}">--</span> Clicks
+                                </div>
+                            </div>
                         </div>
                     </div>`;
                 } else {
                     html += `
-                    <div class="cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 flex items-center justify-between shadow hover:shadow-md transition-shadow group relative" onclick="openQuickView('${course.id}')">
+                    <div class="cursor-pointer glass-card rounded-2xl p-4 flex items-center justify-between hover:border-brand-500/50 transition-all group relative obs-target" data-course-id="${safeId}" onclick="openQuickView('${course.id}', '${safeId}')">
                         ${badgeHtml}
-                        <div class="flex items-center gap-4 truncate">
+                        <div class="flex items-center gap-4 truncate w-full">
                             <button onclick="toggleBookmark(event, '${course.id}')" class="text-xl hover:scale-110 transition-transform ml-2 shrink-0"><i class="${markIcon} fa-bookmark"></i></button>
-                            <div class="truncate">
+                            <div class="truncate flex-grow">
                                 <h2 class="text-base font-black text-slate-800 dark:text-white truncate">${course.title}</h2>
-                                <p class="text-xs text-slate-500 font-bold"><span class="text-brand-500 mr-2">${course.category}</span> ${course.date}</p>
+                                <div class="flex items-center gap-4 text-xs font-bold mt-1">
+                                    <span class="text-slate-500"><span class="text-brand-500 mr-1">${course.category}</span> ${course.date}</span>
+                                    <span class="text-brand-500 flex items-center gap-1"><i class="fa-solid fa-fire"></i> <span id="count-val-${safeId}">--</span></span>
+                                </div>
                             </div>
                         </div>
-                        <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-brand-500 transition-colors mr-2 shrink-0"></i>
+                        <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-brand-500 transition-colors ml-4 shrink-0"></i>
                     </div>`;
                 }
             });
             
             container.innerHTML = html;
+            
+            // Attach observer to new elements
+            document.querySelectorAll('.obs-target').forEach(el => clickObserver.observe(el));
             if(viewMode === 'grid') initTilt();
         }
 
-        // 8. SEARCH ENGINE & SUGGESTIONS
+        // 10. SEARCH ENGINE & SUGGESTIONS
         const searchInput = document.getElementById('searchInput');
         const suggestBox = document.getElementById('search-suggestions');
         
@@ -707,7 +712,8 @@
             if(filtered.length > 0) {
                 let sHtml = '';
                 filtered.slice(0, 5).forEach(c => {
-                    sHtml += `<li onclick="openQuickView('${c.id}'); document.getElementById('search-suggestions').classList.add('hidden');" class="px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer border-b border-slate-100 dark:border-slate-700 flex justify-between items-center"><span class="font-bold text-sm text-slate-700 dark:text-slate-300 truncate">${c.title}</span><i class="fa-solid fa-arrow-right text-xs text-brand-500"></i></li>`;
+                    const safeId = (c.title).replace(/[^a-zA-Z0-9]/g, '').substring(0, 30);
+                    sHtml += `<li onclick="openQuickView('${c.id}', '${safeId}'); document.getElementById('search-suggestions').classList.add('hidden');" class="px-4 py-3 hover:bg-slate-100/50 dark:hover:bg-slate-700/50 cursor-pointer border-b border-slate-200/50 dark:border-slate-700/50 flex justify-between items-center transition-colors"><span class="font-bold text-sm text-slate-700 dark:text-slate-300 truncate">${c.title}</span><i class="fa-solid fa-arrow-right text-xs text-brand-500"></i></li>`;
                 });
                 suggestBox.innerHTML = sHtml;
                 suggestBox.classList.remove('hidden');
