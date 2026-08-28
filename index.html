@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,14 +7,48 @@
     
     <!-- 📱 PWA Manifest -->
     <link rel="manifest" id="manifest-link">
-    <meta name="theme-color" content="#030712">
+    <meta name="theme-color" content="#4f46e5">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-    <!-- Premium Font: Plus Jakarta Sans -->
+    <!-- Premium Fonts: Space Grotesk (Headings) & Inter (Body) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700;900&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS & Configuration -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: { 50: '#eef2ff', 100: '#e0e7ff', 500: '#6366f1', 600: '#4f46e5', 900: '#312e81' },
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'scale-in': 'scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'spin-slow': 'spin 3s linear infinite',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        scaleIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.95)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -23,672 +57,497 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
-        /* CSS VARIABLES FOR PREMIUM DARK THEME */
-        :root {
-            --bg-base: #030712;
-            --glass-bg: rgba(17, 24, 39, 0.6);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-glow: rgba(0, 225, 255, 0.15);
-            --accent-cyan: #00f0ff;
-            --accent-blue: #3b82f6;
-            --text-main: #ffffff;
-            --text-muted: #9ca3af;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-base);
-            color: var(--text-main);
-            overflow-x: hidden;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* AMBIENT MESH BACKGROUND */
-        .mesh-bg {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: -1;
-            background: 
-                radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.15), transparent 25%),
-                radial-gradient(circle at 85% 30%, rgba(0, 240, 255, 0.15), transparent 25%);
-            filter: blur(60px);
-            animation: breathe 10s infinite alternate ease-in-out;
-        }
-
-        @keyframes breathe {
-            0% { transform: scale(1); opacity: 0.8; }
-            100% { transform: scale(1.1); opacity: 1; }
-        }
-
-        /* FLOATING GLASS NAVIGATION */
-        nav {
-            position: sticky;
-            top: 20px;
-            margin: 0 auto;
-            width: 95%;
-            max-width: 1200px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 100px;
-            padding: 12px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 100;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-            transition: all 0.3s ease;
-        }
-
-        .nav-brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 800;
-            font-size: 1.2rem;
-            letter-spacing: -0.5px;
-        }
-
-        .nav-brand i { color: var(--accent-cyan); font-size: 1.5rem; }
+        /* Smooth Scrolling & Hide Scrollbar */
+        html { scroll-behavior: smooth; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #6366f1; border-radius: 10px; }
         
-        .nav-stats {
-            display: flex;
-            gap: 15px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--text-muted);
-        }
-
-        .stat-pill {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 6px 14px;
-            border-radius: 50px;
-            border: 1px solid var(--glass-border);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .stat-pill span { color: var(--accent-cyan); }
-
-        .nav-actions { display: flex; gap: 10px; }
-
-        .btn-glass {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
-            color: var(--text-main);
-            padding: 8px 18px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-glass:hover, .btn-glass.active {
-            background: var(--accent-cyan);
-            color: var(--bg-base);
-            border-color: var(--accent-cyan);
-            box-shadow: 0 0 20px var(--glass-glow);
-        }
-
-        /* HERO & SEARCH SECTION */
-        .hero {
-            text-align: center;
-            padding: 80px 20px 40px;
-            animation: fadeInUp 0.8s ease forwards;
-        }
-
-        .hero h1 {
-            font-size: clamp(2.5rem, 5vw, 4.5rem);
-            font-weight: 800;
-            line-height: 1.1;
-            margin-bottom: 15px;
-            letter-spacing: -1px;
-        }
-
-        .gradient-text {
-            background: linear-gradient(135deg, var(--text-main), var(--accent-cyan));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .search-wrapper {
-            position: relative;
-            max-width: 700px;
-            margin: 40px auto 0;
-        }
-
-        .search-wrapper i {
-            position: absolute;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-            font-size: 1.2rem;
-        }
-
-        #searchInput {
-            width: 100%;
-            background: rgba(17, 24, 39, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            padding: 20px 20px 20px 55px;
-            border-radius: 20px;
-            color: var(--text-main);
-            font-size: 1.1rem;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-            outline: none;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        #searchInput:focus {
-            border-color: var(--accent-cyan);
-            box-shadow: 0 0 30px var(--glass-glow);
-            background: rgba(17, 24, 39, 0.95);
-        }
-
-        #search-suggestions {
-            position: absolute;
-            top: 100%; left: 0; right: 0;
-            margin-top: 10px;
-            background: rgba(17, 24, 39, 0.95);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            list-style: none;
-            overflow: hidden;
-            z-index: 50;
-            display: none;
-        }
-
-        #search-suggestions li {
-            padding: 15px 20px;
-            border-bottom: 1px solid var(--glass-border);
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: background 0.2s;
-        }
-
-        #search-suggestions li:hover { background: rgba(255, 255, 255, 0.05); }
-
-        /* COURSE GRID */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            flex-grow: 1;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 24px;
-        }
-
-        .course-card {
-            background: rgba(20, 25, 35, 0.5);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .course-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 3px;
-            background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .course-card:hover {
-            transform: translateY(-5px);
-            background: rgba(30, 35, 45, 0.8);
-            border-color: rgba(255,255,255,0.15);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-        }
-
-        .course-card:hover::before { opacity: 1; }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 15px;
-        }
-
-        .category-tag {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 800;
-            color: var(--accent-cyan);
-            background: rgba(0, 240, 255, 0.1);
-            padding: 4px 10px;
-            border-radius: 8px;
-        }
-
-        .bookmark-btn {
-            background: none; border: none;
-            color: var(--text-muted);
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-
-        .bookmark-btn.saved { color: var(--accent-cyan); }
-
-        .course-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            line-height: 1.4;
-            margin-bottom: 20px;
-            flex-grow: 1;
-        }
-
-        .card-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-top: 1px solid var(--glass-border);
-            padding-top: 15px;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        .clicks-badge {
-            display: flex; align-items: center; gap: 5px;
-            color: var(--text-main); font-weight: 600;
-        }
-
-        .clicks-badge i { color: #f59e0b; }
-
-        /* HIGH-END MODAL */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            z-index: 1000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .modal-overlay.active { opacity: 1; visibility: visible; }
-
-        .modal-content {
-            background: #0f131c;
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 24px;
-            width: 100%;
-            max-width: 500px;
-            padding: 30px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-            transform: scale(0.95) translateY(20px);
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            position: relative;
-        }
-
-        .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
-
-        .modal-close {
-            position: absolute; top: 20px; right: 20px;
-            background: rgba(255,255,255,0.1); border: none;
-            width: 32px; height: 32px; border-radius: 50%;
-            color: white; cursor: pointer;
-            display: flex; justify-content: center; align-items: center;
-            transition: background 0.2s;
-        }
-        .modal-close:hover { background: rgba(239, 68, 68, 0.8); }
-
-        .modal-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 10px; padding-right: 30px; color: white;}
-        .modal-meta { display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 0.85rem; color: var(--text-muted); }
+        /* Modern App Transitions */
+        body { transition: background-color 0.4s ease, color 0.4s ease; overflow-x: hidden; }
         
-        .feature-list { background: rgba(255,255,255,0.03); border-radius: 12px; padding: 15px; margin-bottom: 25px; list-style: none; }
-        .feature-list li { margin-bottom: 8px; font-size: 0.9rem; display: flex; gap: 10px; align-items: center; color: white;}
-        .feature-list i { color: var(--accent-cyan); }
-
-        .btn-primary {
-            display: block; width: 100%;
-            background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
-            color: #000; text-align: center; font-weight: 800;
-            padding: 16px; border-radius: 16px; text-decoration: none;
-            margin-bottom: 15px; transition: transform 0.2s; border: none; cursor: pointer;
+        /* Glassmorphism Navigation */
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
         }
-        .btn-primary:hover { transform: scale(1.02); }
-
-        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .btn-secondary {
-            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1);
-            color: white; padding: 12px; border-radius: 12px;
-            font-weight: 600; font-size: 0.9rem; cursor: pointer;
-            display: flex; justify-content: center; align-items: center; gap: 8px;
-            transition: background 0.2s;
+        .dark .glass-nav {
+            background: rgba(15, 23, 42, 0.8);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
-        .btn-secondary:hover { background: rgba(255,255,255,0.15); }
-        .btn-danger { color: #ef4444; border-color: rgba(239, 68, 68, 0.3); background: rgba(239, 68, 68, 0.1); }
-        .btn-danger:hover { background: rgba(239, 68, 68, 0.2); }
 
-        /* SKELETON LOADER */
-        .skeleton-card { background: rgba(255,255,255,0.05); border-radius: 20px; padding: 24px; height: 200px; animation: pulse 1.5s infinite; }
-        .sk-line { background: rgba(255,255,255,0.1); height: 16px; border-radius: 8px; margin-bottom: 15px; }
+        /* Staggered Card Animation */
+        .stagger-card { opacity: 0; transform: translateY(20px); }
+        .stagger-card.show { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        
+        /* Loader Spinner */
+        .loader-ring {
+            border: 3px solid rgba(99, 102, 241, 0.2);
+            border-top-color: #6366f1;
+            border-radius: 50%;
+            width: 16px; height: 16px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
 
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
-
-        #qr-container { background: white; padding: 15px; border-radius: 16px; display: none; text-align: center; margin-top: 15px; }
-        #qrcode { display: flex; justify-content: center; margin-bottom: 10px; }
-
-        @media (max-width: 768px) {
-            nav { flex-direction: column; gap: 15px; border-radius: 20px; padding: 15px; }
-            .nav-stats { width: 100%; justify-content: space-between; }
+        /* Background Decor */
+        .bg-mesh {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;
+            background: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                        radial-gradient(at 100% 0%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
+        }
+        .dark .bg-mesh {
+            background: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.1) 0px, transparent 50%),
+                        radial-gradient(at 100% 0%, rgba(236, 72, 153, 0.1) 0px, transparent 50%);
         }
     </style>
 </head>
-<body>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white min-h-screen flex flex-col">
 
-    <div class="mesh-bg"></div>
+    <div class="bg-mesh"></div>
 
-    <nav>
-        <div class="nav-brand" onclick="window.scrollTo(0,0);"><i class="fa-solid fa-gem"></i> FHO Vault</div>
-        
-        <div class="nav-stats">
-            <div class="stat-pill"><i class="fa-solid fa-eye text-accent-cyan"></i> Today: <span id="dailyVisits">...</span></div>
-            <div class="stat-pill"><i class="fa-solid fa-globe text-accent-blue"></i> Global: <span id="lifetimeVisits">...</span></div>
-        </div>
+    <!-- 🌟 TOP NAVIGATION -->
+    <nav class="glass-nav sticky top-0 z-50 transition-all">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row justify-between items-center py-4 gap-4">
+                
+                <!-- Logo & Live Stats -->
+                <div class="flex items-center justify-between w-full lg:w-auto">
+                    <div class="flex items-center gap-3 cursor-pointer" onclick="window.scrollTo(0,0)">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-brand-500/30">
+                            <i class="fa-solid fa-layer-group text-xl"></i>
+                        </div>
+                        <div>
+                            <h1 class="font-heading font-black text-2xl tracking-tight leading-none text-slate-900 dark:text-white">FHO <span class="text-brand-500">Vault</span></h1>
+                            <div class="flex items-center gap-1.5 mt-0.5">
+                                <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span></span>
+                                <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Live Sync</span>
+                            </div>
+                        </div>
+                    </div>
 
-        <div class="nav-actions">
-            <button onclick="openNetworkModal()" class="btn-glass"><i class="fa-solid fa-network-wired"></i> Network</button>
-            <button onclick="toggleVaultView()" id="btn-vault" class="btn-glass"><i class="fa-solid fa-bookmark"></i> Vault</button>
+                    <!-- Mobile Theme Toggle -->
+                    <button onclick="toggleTheme()" class="lg:hidden w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-amber-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+                        <i id="theme-icon-mobile" class="fa-solid fa-moon"></i>
+                    </button>
+                </div>
+
+                <!-- Global Traffic & Toolbar -->
+                <div class="flex flex-wrap items-center gap-3 lg:gap-4 w-full lg:w-auto justify-center">
+                    
+                    <!-- Real Traffic Stats -->
+                    <div class="flex gap-2 text-xs font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-full p-1 shadow-sm">
+                        <div class="px-3 py-1.5 rounded-full bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center gap-2">
+                            <i class="fa-solid fa-bolt"></i> Today: <span id="stat-daily" class="min-w-[20px] text-center"><div class="loader-ring"></div></span>
+                        </div>
+                        <div class="px-3 py-1.5 rounded-full text-slate-600 dark:text-slate-400 flex items-center gap-2">
+                            <i class="fa-solid fa-globe"></i> Total: <span id="stat-lifetime" class="min-w-[30px] text-center"><div class="loader-ring"></div></span>
+                        </div>
+                    </div>
+
+                    <div class="h-6 w-px bg-slate-200 dark:bg-slate-800 hidden lg:block"></div>
+
+                    <!-- Action Buttons -->
+                    <button onclick="toggleVaultView()" id="btn-vault" class="px-4 py-2 rounded-full font-bold text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition shadow-sm flex items-center gap-2">
+                        <i class="fa-solid fa-bookmark text-brand-500"></i> My Vault
+                    </button>
+
+                    <!-- View Toggles -->
+                    <div class="bg-slate-100 dark:bg-slate-800 rounded-full p-1 flex border border-slate-200 dark:border-slate-700">
+                        <button onclick="setViewMode('grid')" id="btn-grid" class="w-8 h-8 rounded-full bg-white dark:bg-slate-700 text-brand-600 shadow-sm transition"><i class="fa-solid fa-border-all"></i></button>
+                        <button onclick="setViewMode('list')" id="btn-list" class="w-8 h-8 rounded-full text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition"><i class="fa-solid fa-list"></i></button>
+                    </div>
+
+                    <!-- Desktop Theme Toggle -->
+                    <button onclick="toggleTheme()" class="hidden lg:flex w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 items-center justify-center text-slate-600 dark:text-amber-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700">
+                        <i id="theme-icon-desktop" class="fa-solid fa-moon"></i>
+                    </button>
+                </div>
+            </div>
         </div>
     </nav>
 
-    <main class="container">
-        <section class="hero">
-            <h1>Unlock The <span class="gradient-text">Master Archive</span></h1>
-            <p style="color: var(--text-muted); font-size: 1.1rem;">Your elite, auto-syncing vault of premium knowledge.</p>
-            
-            <div class="search-wrapper">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="searchInput" placeholder="Search across 1000+ premium courses..." autocomplete="off">
-                <ul id="search-suggestions"></ul>
-            </div>
-        </section>
+    <!-- 🌟 HERO & SEARCH SECTION -->
+    <main class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 z-10">
+        <div class="text-center max-w-3xl mx-auto mb-16 animate-fade-in-up">
+            <h2 class="font-heading font-black text-5xl md:text-7xl tracking-tighter mb-6 text-slate-900 dark:text-white leading-tight">
+                Unlock The <br/>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-500 to-fuchsia-500">Master Archive</span>
+            </h2>
+            <p class="text-lg md:text-xl text-slate-600 dark:text-slate-400 font-medium mb-10">Your elite, auto-syncing vault containing over 1,000+ high-end premium courses.</p>
 
-        <div id="course-container" class="grid">
+            <!-- Awesome Search Bar -->
+            <div class="relative group max-w-2xl mx-auto">
+                <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+                    <i class="fa-solid fa-magnifying-glass text-slate-400 group-focus-within:text-brand-500 transition-colors text-xl"></i>
+                </div>
+                <input type="text" id="searchInput" autocomplete="off" placeholder="Search for any skill, course, or category..." class="block w-full pl-14 pr-4 py-5 bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-2xl text-lg text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all shadow-xl shadow-slate-200/50 dark:shadow-none">
+                
+                <!-- Search Suggestions -->
+                <ul id="search-suggestions" class="absolute w-full mt-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-2xl z-50 hidden max-h-60 overflow-y-auto text-left"></ul>
+            </div>
+        </div>
+
+        <!-- 🌟 DYNAMIC COURSE GRID -->
+        <div id="course-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <!-- Skeleton Loaders -->
-            <div class="skeleton-card"><div class="sk-line w-1/3"></div><div class="sk-line w-full"></div><div class="sk-line w-2/3"></div></div>
-            <div class="skeleton-card"><div class="sk-line w-1/3"></div><div class="sk-line w-full"></div><div class="sk-line w-2/3"></div></div>
-            <div class="skeleton-card"><div class="sk-line w-1/3"></div><div class="sk-line w-full"></div><div class="sk-line w-2/3"></div></div>
+            <div class="bg-white dark:bg-slate-900 rounded-3xl h-[340px] border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm animate-pulse">
+                <div class="h-32 bg-slate-200 dark:bg-slate-800"></div>
+                <div class="p-6"><div class="h-6 w-3/4 bg-slate-200 dark:bg-slate-800 rounded-md mb-4"></div><div class="h-4 w-1/2 bg-slate-200 dark:bg-slate-800 rounded-md"></div></div>
+            </div>
+            <div class="bg-white dark:bg-slate-900 rounded-3xl h-[340px] border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm animate-pulse hidden md:block">
+                <div class="h-32 bg-slate-200 dark:bg-slate-800"></div>
+                <div class="p-6"><div class="h-6 w-3/4 bg-slate-200 dark:bg-slate-800 rounded-md mb-4"></div><div class="h-4 w-1/2 bg-slate-200 dark:bg-slate-800 rounded-md"></div></div>
+            </div>
+            <div class="bg-white dark:bg-slate-900 rounded-3xl h-[340px] border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm animate-pulse hidden lg:block">
+                <div class="h-32 bg-slate-200 dark:bg-slate-800"></div>
+                <div class="p-6"><div class="h-6 w-3/4 bg-slate-200 dark:bg-slate-800 rounded-md mb-4"></div><div class="h-4 w-1/2 bg-slate-200 dark:bg-slate-800 rounded-md"></div></div>
+            </div>
         </div>
     </main>
 
-    <!-- COURSE QUICK VIEW MODAL -->
-    <div id="modal-backdrop" class="modal-overlay" onclick="closeModal('modal-backdrop')">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <button class="modal-close" onclick="closeModal('modal-backdrop')"><i class="fa-solid fa-xmark"></i></button>
+    <!-- Daily Tech Fact Ticker -->
+    <div class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 py-3 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 flex items-center justify-center gap-3">
+            <span class="bg-gradient-to-r from-brand-500 to-indigo-600 text-white text-[10px] font-black px-2 py-1 rounded uppercase tracking-wider whitespace-nowrap"><i class="fa-solid fa-lightbulb"></i> Fun Fact</span>
+            <p id="tech-fact" class="text-sm font-medium text-slate-600 dark:text-slate-400 truncate">Loading intelligence...</p>
+        </div>
+    </div>
+
+    <!-- 🌟 COURSE QUICK VIEW MODAL (REDESIGNED) -->
+    <div id="modal-overlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300" onclick="closeModals()">
+        <div id="quickview-modal" class="bg-white dark:bg-slate-900 w-full max-w-lg rounded-3xl shadow-2xl transform scale-95 transition-all duration-300 hidden overflow-hidden flex flex-col max-h-[90vh]" onclick="event.stopPropagation()">
             
-            <h2 id="qv-title" class="modal-title">Course Title</h2>
-            <div class="modal-meta">
-                <span id="qv-category" class="category-tag">Category</span>
-                <span id="qv-date"><i class="fa-regular fa-calendar"></i> Date</span>
-                <span style="color: #f59e0b; font-weight: bold;"><i class="fa-solid fa-fire"></i> <span id="qv-clicks">0</span></span>
+            <!-- Modal Dynamic Header Gradient -->
+            <div id="qv-header-bg" class="h-24 bg-gradient-to-r from-brand-500 to-indigo-600 relative p-6 flex justify-between items-start shrink-0">
+                <span id="qv-category" class="bg-white/20 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-white/30 shadow-sm">Category</span>
+                <button onclick="closeModals()" class="w-8 h-8 rounded-full bg-black/20 text-white flex items-center justify-center hover:bg-black/40 transition"><i class="fa-solid fa-xmark"></i></button>
             </div>
-
-            <ul class="feature-list">
-                <li><i class="fa-solid fa-check-circle"></i> Premium Video Modules & Assets</li>
-                <li><i class="fa-solid fa-check-circle"></i> Full Lifetime Access</li>
-                <li><i class="fa-solid fa-check-circle"></i> Synced via FHO Serverless Node</li>
-            </ul>
-
-            <a id="qv-download" href="#" target="_blank" class="btn-primary"><i class="fa-solid fa-cloud-arrow-down"></i> Access Premium Course</a>
             
-            <div class="btn-grid">
-                <button id="qv-copy" class="btn-secondary"><i class="fa-solid fa-link"></i> Copy Link</button>
-                <button id="qv-qr" class="btn-secondary"><i class="fa-solid fa-qrcode"></i> Show QR</button>
-                <button id="qv-share" class="btn-secondary" style="color: #25D366; border-color: rgba(37, 211, 102, 0.3);"><i class="fa-brands fa-whatsapp"></i> Share</button>
-                <a id="qv-report" href="#" target="_blank" style="text-decoration:none;" class="btn-secondary btn-danger"><i class="fa-solid fa-triangle-exclamation"></i> Dead Link</a>
-            </div>
+            <div class="p-6 md:p-8 overflow-y-auto custom-scrollbar flex-grow">
+                <h3 id="qv-title" class="font-heading text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-4 leading-tight">Course Title</h3>
+                
+                <div class="flex items-center justify-between mb-6 pb-6 border-b border-slate-100 dark:border-slate-800">
+                    <p id="qv-date" class="text-sm text-slate-500 dark:text-slate-400 font-medium"><i class="fa-regular fa-calendar mr-1"></i> Date</p>
+                    <div class="bg-amber-100 dark:bg-amber-500/10 text-amber-600 dark:text-amber-500 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1.5 border border-amber-200 dark:border-amber-500/20">
+                        <i class="fa-solid fa-fire"></i> <span id="qv-clicks"><div class="loader-ring" style="width:12px;height:12px;border-top-color:currentColor;"></div></span> Clicks
+                    </div>
+                </div>
 
-            <div id="qr-container">
-                <div id="qrcode"></div>
-                <p style="color: #666; font-size: 0.8rem; font-weight: bold;">Scan to open on mobile</p>
+                <!-- 🔥 THE MOST IMPORTANT ADDITION: WHATSAPP & HEYLINK BUTTONS 🔥 -->
+                <div class="flex flex-col gap-3 mb-8 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-100 dark:border-slate-700/50">
+                    <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 text-center">Join Community For Updates</p>
+                    <a href="https://chat.whatsapp.com/D2wgeEuG36X0pscOqtFnni" target="_blank" class="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold py-3.5 px-4 rounded-xl flex justify-center items-center gap-3 transition-colors shadow-sm shadow-[#25D366]/30">
+                        <i class="fa-brands fa-whatsapp text-xl"></i> Join FHO Main Group
+                    </a>
+                    <a href="https://heylink.me/FarooqHameedOfficial" target="_blank" class="w-full bg-slate-800 hover:bg-slate-900 dark:bg-brand-600 dark:hover:bg-brand-500 text-white font-bold py-3.5 px-4 rounded-xl flex justify-center items-center gap-3 transition-colors shadow-sm">
+                        <i class="fa-solid fa-link text-xl"></i> Official FHO Links
+                    </a>
+                </div>
+
+                <!-- Download Action Button -->
+                <a id="qv-download" href="#" target="_blank" class="w-full bg-gradient-to-r from-brand-500 to-indigo-600 hover:from-brand-600 hover:to-indigo-700 text-white font-bold py-4 rounded-xl text-center shadow-lg shadow-brand-500/30 transition-transform transform hover:scale-[1.02] flex items-center justify-center gap-2 mb-4">
+                    <i class="fa-solid fa-cloud-arrow-down text-xl"></i> Access Premium Course
+                </a>
+                
+                <!-- Quick Tools -->
+                <div class="grid grid-cols-2 gap-3">
+                    <button id="qv-copy" class="bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold py-3 rounded-xl transition border border-slate-200 dark:border-slate-700 flex justify-center items-center gap-2 text-sm">
+                        <i class="fa-solid fa-copy text-brand-500"></i> Copy Link
+                    </button>
+                    <button id="qv-qr" class="bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold py-3 rounded-xl transition border border-slate-200 dark:border-slate-700 flex justify-center items-center gap-2 text-sm">
+                        <i class="fa-solid fa-qrcode text-brand-500"></i> Show QR
+                    </button>
+                </div>
+                
+                <!-- QR Code Display Area -->
+                <div id="qr-container" class="hidden flex-col items-center justify-center p-6 bg-white rounded-2xl mt-4 border border-slate-200 shadow-inner">
+                    <div id="qrcode"></div>
+                    <p class="text-xs text-slate-500 font-bold mt-4 text-center">Scan to open on your mobile device</p>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- NETWORK MODAL -->
-    <div id="network-backdrop" class="modal-overlay" onclick="closeModal('network-backdrop')">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <button class="modal-close" onclick="closeModal('network-backdrop')"><i class="fa-solid fa-xmark"></i></button>
-            <h2 class="modal-title" style="text-align: center; padding: 0;">Join The Network</h2>
-            <p style="color: var(--text-muted); text-align: center; margin-bottom: 20px; font-size: 0.9rem;">Get daily premium courses directly on your phone.</p>
-            
-            <a href="https://chat.whatsapp.com/D2wgeEuG36X0pscOqtFnni" class="btn-secondary" style="margin-bottom: 10px; justify-content: space-between; padding: 16px;"><span style="color:#25D366;"><i class="fa-brands fa-whatsapp fa-lg"></i> FHO Main Group</span> <i class="fa-solid fa-arrow-right"></i></a>
-            <a href="https://chat.whatsapp.com/LoISgJuuitdFT4QZOjpo7B" class="btn-secondary" style="margin-bottom: 10px; justify-content: space-between; padding: 16px;"><span style="color:#25D366;"><i class="fa-brands fa-whatsapp fa-lg"></i> FHO Backup Group</span> <i class="fa-solid fa-arrow-right"></i></a>
-            <a href="https://heylink.me/FarooqHameedOfficial" class="btn-secondary" style="justify-content: space-between; padding: 16px;"><span style="color:#3b82f6;"><i class="fa-solid fa-link fa-lg"></i> Official Links</span> <i class="fa-solid fa-arrow-right"></i></a>
-        </div>
-    </div>
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="fixed bottom-6 right-6 flex flex-col gap-2 z-[200]"></div>
 
+    <!-- 🌟 MASTER APPLICATION LOGIC -->
     <script>
-        // CONFIG
-        const ADMIN_WA = "923001234567";
+        const ADMIN_WA = "923001234567"; 
+        const COUNTER_NAMESPACE = 'fhovault_v3'; // Clean namespace for accurate counting
         let courses = [];
-        let savedVault = JSON.parse(localStorage.getItem('fho_vault_v2')) || [];
+        let savedVault = JSON.parse(localStorage.getItem('fho_vault_v3')) || [];
+        let viewMode = 'grid'; 
         let showingVaultOnly = false;
 
         // PWA Setup
-        const manifest = {
-            "name": "FHO Cyber Vault", "short_name": "FHO Vault",
-            "start_url": ".", "display": "standalone",
-            "background_color": "#030712", "theme_color": "#00f0ff",
-            "icons": [{"src": "https://cdn-icons-png.flaticon.com/512/4712/4712139.png", "sizes": "512x512", "type": "image/png"}]
-        };
-        document.getElementById('manifest-link').href = 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifest));
-
-        // 1. BULLETPROOF DETERMINISTIC FALLBACK COUNTER
-        // If the Counter API is blocked by adblockers, this generates a realistic, permanent click count based on the course name.
-        function getDeterministicClicks(string) {
-            let hash = 0;
-            for (let i = 0; i < string.length; i++) hash = string.charCodeAt(i) + ((hash << 5) - hash);
-            return Math.abs(hash) % 850 + 125; // Returns a steady number between 125 and 975
+        function initPWA() {
+            const manifest = {
+                "name": "FHO Premium Vault", "short_name": "FHO Vault",
+                "start_url": ".", "display": "standalone",
+                "background_color": "#020617", "theme_color": "#6366f1",
+                "icons": [{"src": "https://cdn-icons-png.flaticon.com/512/4712/4712139.png", "sizes": "512x512", "type": "image/png"}]
+            };
+            document.getElementById('manifest-link').href = 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifest));
         }
+        initPWA();
 
-        // 2. GLOBAL TRAFFIC COUNTER
+        // Theme Engine
+        const htmlEl = document.documentElement;
+        function updateThemeIcons(isDark) {
+            document.getElementById('theme-icon-desktop').className = isDark ? 'fa-solid fa-sun text-amber-400' : 'fa-solid fa-moon text-slate-600';
+            document.getElementById('theme-icon-mobile').className = isDark ? 'fa-solid fa-sun text-amber-400' : 'fa-solid fa-moon text-slate-600';
+        }
+        function initTheme() {
+            const isDark = localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            if (isDark) htmlEl.classList.add('dark'); else htmlEl.classList.remove('dark');
+            updateThemeIcons(isDark);
+        }
+        function toggleTheme() {
+            const isDark = htmlEl.classList.contains('dark');
+            if (isDark) { htmlEl.classList.remove('dark'); localStorage.theme = 'light'; } 
+            else { htmlEl.classList.add('dark'); localStorage.theme = 'dark'; }
+            updateThemeIcons(!isDark);
+        }
+        initTheme();
+
+        // 🌟 REAL TRAFFIC COUNTER API (NO FAKE NUMBERS)
         async function fetchGlobalTraffic() {
             const dateStr = new Date().toISOString().split('T')[0];
-            const dEl = document.getElementById('dailyVisits');
-            const lEl = document.getElementById('lifetimeVisits');
+            const dEl = document.getElementById('stat-daily');
+            const lEl = document.getElementById('stat-lifetime');
             
             try {
-                // Using a reliable generic fetch
-                const resD = await fetch(`https://api.counterapi.dev/v1/fhovault/daily_${dateStr}/up`);
-                const dataD = await resD.json();
-                dEl.innerText = dataD.count || Math.floor(Math.random()*50 + 100);
+                // Fetch Lifetime
+                const resL = await fetch(`https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/lifetime/up`);
+                if(resL.ok) { const dataL = await resL.json(); lEl.innerText = dataL.count.toLocaleString(); } 
+                else lEl.innerText = "N/A";
 
-                const resL = await fetch(`https://api.counterapi.dev/v1/fhovault/lifetime/up`);
-                const dataL = await resL.json();
-                lEl.innerText = dataL.count || 15420;
+                // Fetch Daily
+                const resD = await fetch(`https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/daily_${dateStr}/up`);
+                if(resD.ok) { const dataD = await resD.json(); dEl.innerText = dataD.count.toLocaleString(); }
+                else dEl.innerText = "N/A";
             } catch (e) {
-                // Fallback if adblocker blocks API
-                dEl.innerText = Math.floor(Math.random() * 80) + 120;
-                lEl.innerText = "18,452";
+                dEl.innerText = "N/A";
+                lEl.innerText = "N/A";
             }
         }
         fetchGlobalTraffic();
 
-        // 3. COURSE CLICK OBSERVER
+        // 🌟 COURSE CLICK OBSERVER (STRICTLY REAL DATA)
         const clickObserver = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const safeId = entry.target.dataset.cid;
-                    const fallbackNum = entry.target.dataset.fallback;
                     const el = document.getElementById(`cnt-${safeId}`);
                     
-                    fetch(`https://api.counterapi.dev/v1/fhovault/course_${safeId}`)
-                        .then(r => r.json())
-                        .then(d => { if(el) el.innerText = d.count || fallbackNum; })
-                        .catch(() => { if(el) el.innerText = fallbackNum; }); // Fallback on block
+                    fetch(`https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/course_${safeId}`)
+                        .then(r => r.ok ? r.json() : {count: 0})
+                        .then(d => { if(el) el.innerText = (d.count || 0).toLocaleString(); })
+                        .catch(() => { if(el) el.innerText = "0"; });
                     
                     observer.unobserve(entry.target);
                 }
             });
-        }, { rootMargin: "100px" });
+        }, { rootMargin: "150px" });
 
         function registerCourseClick(safeId) {
             const el = document.getElementById(`cnt-${safeId}`);
-            if(el) el.innerText = (parseInt(el.innerText) || 0) + 1;
+            if(el && el.innerText !== '...') {
+                let current = parseInt(el.innerText.replace(/,/g, '')) || 0;
+                el.innerText = (current + 1).toLocaleString();
+            }
             const qv = document.getElementById('qv-clicks');
-            if(qv) qv.innerText = (parseInt(qv.innerText) || 0) + 1;
-            
-            fetch(`https://api.counterapi.dev/v1/fhovault/course_${safeId}/up`).catch(()=>{});
+            if(qv && !qv.innerHTML.includes('loader-ring')) {
+                let current = parseInt(qv.innerText.replace(/,/g, '')) || 0;
+                qv.innerText = (current + 1).toLocaleString();
+            }
+            fetch(`https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/course_${safeId}/up`).catch(()=>{});
         }
 
-        // 4. FETCH AND RENDER COURSES
+        // 🌟 STUNNING DYNAMIC CATEGORY GRADIENTS
+        function getCategoryGradient(category) {
+            const cat = (category || '').toLowerCase();
+            if(cat.includes('hack') || cat.includes('card') || cat.includes('cyber')) return 'from-red-500 to-rose-900';
+            if(cat.includes('design') || cat.includes('edit')) return 'from-fuchsia-500 to-purple-800';
+            if(cat.includes('code') || cat.includes('dev') || cat.includes('html')) return 'from-blue-500 to-indigo-900';
+            if(cat.includes('market') || cat.includes('seo') || cat.includes('youtube')) return 'from-emerald-500 to-teal-900';
+            return 'from-amber-500 to-orange-800'; // Default Other
+        }
+
+        // 🌟 FETCH & RENDER ENGINE
         async function loadCourses() {
             try {
                 const res = await fetch('archive.json?' + Date.now());
                 courses = await res.json();
                 renderCourses(courses);
             } catch (e) {
-                document.getElementById('course-container').innerHTML = `<div style="text-align:center; color:#9ca3af; grid-column: 1/-1; padding: 50px;"><h2><i class="fa-solid fa-satellite-dish fa-2x"></i></h2><br>Database Offline. Waiting for bot sync.</div>`;
+                document.getElementById('course-container').innerHTML = `<div class="col-span-full text-center py-20"><i class="fa-solid fa-satellite-dish text-6xl text-slate-300 dark:text-slate-700 mb-4"></i><p class="text-xl font-bold text-slate-500">Database Offline</p></div>`;
             }
         }
 
         function renderCourses(data) {
             const container = document.getElementById('course-container');
+            container.className = viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" : "flex flex-col gap-4";
+            
             if(data.length === 0) {
-                container.innerHTML = `<div style="text-align:center; color:#9ca3af; grid-column: 1/-1; padding: 50px;"><h2><i class="fa-solid fa-folder-open fa-2x"></i></h2><br>No courses found.</div>`;
+                container.innerHTML = `<div class="col-span-full text-center py-20"><i class="fa-regular fa-folder-open text-6xl text-slate-300 dark:text-slate-700 mb-4"></i><p class="text-xl font-bold text-slate-500">No courses found.</p></div>`;
                 return;
             }
 
             let html = '';
-            data.forEach(c => {
+            data.forEach((c, index) => {
                 const safeId = c.title.replace(/[^a-zA-Z0-9]/g, '').substring(0, 25);
-                const fallbackClicks = getDeterministicClicks(safeId);
                 const isSaved = savedVault.includes(c.id);
-                const markIcon = isSaved ? 'fa-solid saved' : 'fa-regular';
-
-                html += `
-                <div class="course-card" onclick="openCourseModal('${c.id}', '${safeId}')">
-                    <div class="card-header">
-                        <span class="category-tag">${c.category || 'Premium'}</span>
-                        <button class="bookmark-btn ${isSaved ? 'saved' : ''}" onclick="toggleSave(event, '${c.id}')"><i class="${markIcon} fa-bookmark"></i></button>
-                    </div>
-                    <div class="course-title">${c.title}</div>
-                    <div class="card-footer">
-                        <span><i class="fa-regular fa-calendar"></i> ${c.date || 'Recent'}</span>
-                        <span class="clicks-badge obs-trigger" data-cid="${safeId}" data-fallback="${fallbackClicks}"><i class="fa-solid fa-fire"></i> <span id="cnt-${safeId}">...</span></span>
-                    </div>
-                </div>`;
+                const gradient = getCategoryGradient(c.category);
+                
+                if (viewMode === 'grid') {
+                    html += `
+                    <div class="stagger-card group bg-white dark:bg-slate-900 rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-slate-200 dark:border-slate-800 cursor-pointer flex flex-col h-full" style="animation-delay: ${index * 0.05}s" onclick="openCourseModal('${c.id}', '${safeId}', '${gradient}')">
+                        <div class="h-32 bg-gradient-to-br ${gradient} relative p-6 flex flex-col justify-between shrink-0">
+                            <div class="flex justify-between items-start">
+                                <span class="bg-white/20 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-white/20 shadow-sm">${c.category || 'Premium'}</span>
+                                <button class="text-white/70 hover:text-white hover:scale-110 transition-transform ${isSaved ? 'text-white' : ''}" onclick="toggleSave(event, '${c.id}')"><i class="${isSaved ? 'fa-solid' : 'fa-regular'} fa-bookmark text-xl drop-shadow-md"></i></button>
+                            </div>
+                        </div>
+                        <div class="p-6 flex flex-col flex-grow">
+                            <h3 class="font-heading text-xl font-bold text-slate-900 dark:text-white mb-2 line-clamp-2 leading-tight flex-grow">${c.title}</h3>
+                            <div class="flex justify-between items-center mt-6 pt-4 border-t border-slate-100 dark:border-slate-800">
+                                <span class="text-xs font-medium text-slate-500 dark:text-slate-400"><i class="fa-regular fa-calendar mr-1"></i>${c.date || 'Recent'}</span>
+                                <span class="text-xs font-bold text-amber-500 bg-amber-50 dark:bg-amber-500/10 px-2 py-1 rounded-md flex items-center gap-1 obs-trigger" data-cid="${safeId}">
+                                    <i class="fa-solid fa-fire"></i> <span id="cnt-${safeId}"><div class="loader-ring" style="width:10px;height:10px;border-top-color:currentColor;"></div></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>`;
+                } else {
+                    html += `
+                    <div class="stagger-card bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-200 dark:border-slate-800 flex items-center gap-4 hover:border-brand-500/50 transition-colors cursor-pointer obs-trigger" data-cid="${safeId}" style="animation-delay: ${index * 0.05}s" onclick="openCourseModal('${c.id}', '${safeId}', '${gradient}')">
+                        <div class="w-16 h-16 rounded-xl bg-gradient-to-br ${gradient} shrink-0 flex items-center justify-center text-white shadow-inner"><i class="fa-solid fa-graduation-cap text-2xl opacity-50"></i></div>
+                        <div class="flex-grow min-w-0">
+                            <h3 class="font-heading text-base md:text-lg font-bold text-slate-900 dark:text-white truncate">${c.title}</h3>
+                            <div class="flex items-center gap-3 mt-1 text-xs font-medium text-slate-500">
+                                <span class="text-brand-500 font-bold uppercase tracking-wider">${c.category || 'Premium'}</span>
+                                <span>&bull;</span> <span>${c.date || 'Recent'}</span>
+                                <span>&bull;</span> <span class="text-amber-500 font-bold flex items-center gap-1"><i class="fa-solid fa-fire"></i> <span id="cnt-${safeId}"><div class="loader-ring" style="width:10px;height:10px;border-top-color:currentColor;"></div></span></span>
+                            </div>
+                        </div>
+                        <button class="ml-2 text-slate-400 hover:text-brand-500 p-2 ${isSaved ? 'text-brand-500' : ''}" onclick="toggleSave(event, '${c.id}')"><i class="${isSaved ? 'fa-solid' : 'fa-regular'} fa-bookmark text-xl"></i></button>
+                    </div>`;
+                }
             });
 
             container.innerHTML = html;
+            setTimeout(() => { document.querySelectorAll('.stagger-card').forEach(el => el.classList.add('show')); }, 100);
             document.querySelectorAll('.obs-trigger').forEach(el => clickObserver.observe(el));
         }
 
-        // 5. MODAL & INTERACTION LOGIC
-        function openCourseModal(id, safeId) {
+        // 🌟 MODAL LOGIC
+        function openCourseModal(id, safeId, gradientStr) {
             const c = courses.find(x => x.id === id);
             if(!c) return;
 
             document.getElementById('qv-title').innerText = c.title;
             document.getElementById('qv-category').innerText = c.category || 'Premium';
-            document.getElementById('qv-date').innerHTML = `<i class="fa-regular fa-calendar"></i> ${c.date || 'Recent'}`;
+            document.getElementById('qv-date').innerHTML = `<i class="fa-regular fa-calendar mr-1"></i> ${c.date || 'Recent'}`;
             document.getElementById('qv-download').href = c.link;
             
+            // Set Modal Header Color
+            const header = document.getElementById('qv-header-bg');
+            header.className = `h-24 relative p-6 flex justify-between items-start shrink-0 bg-gradient-to-r ${gradientStr}`;
+
             const cardClickEl = document.getElementById(`cnt-${safeId}`);
-            document.getElementById('qv-clicks').innerText = cardClickEl ? cardClickEl.innerText : getDeterministicClicks(safeId);
+            if(cardClickEl && !cardClickEl.innerHTML.includes('loader-ring')) {
+                document.getElementById('qv-clicks').innerText = cardClickEl.innerText;
+            } else {
+                // Fetch real count for modal if card hasn't loaded it yet
+                document.getElementById('qv-clicks').innerHTML = `<div class="loader-ring" style="width:12px;height:12px;border-top-color:currentColor;"></div>`;
+                fetch(`https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/course_${safeId}`)
+                    .then(r => r.ok ? r.json() : {count:0})
+                    .then(d => document.getElementById('qv-clicks').innerText = (d.count||0).toLocaleString() )
+                    .catch(() => document.getElementById('qv-clicks').innerText = "0");
+            }
 
             document.getElementById('qv-download').onclick = () => registerCourseClick(safeId);
+            document.getElementById('qv-copy').onclick = () => { navigator.clipboard.writeText(c.link); showToast("Link Copied!", "fa-check"); };
             
-            document.getElementById('qv-copy').onclick = () => { navigator.clipboard.writeText(c.link); alert("Link Copied!"); };
-            document.getElementById('qv-share').onclick = () => {
-                window.open(`https://wa.me/?text=${encodeURIComponent(`🔥 Free Premium Course found on FHO Vault!\n\n🧠 *${c.title}*\n🔗 ${c.link}\n\nSearch more at: ${window.location.href}`)}`, '_blank');
-            };
-            document.getElementById('qv-report').href = `https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(`⚠️ Dead Link Report\nCourse: ${c.title}\nLink: ${c.link}`)}`;
-
             const qrCont = document.getElementById('qr-container');
             const qrDiv = document.getElementById('qrcode');
-            qrCont.style.display = 'none';
+            qrCont.classList.add('hidden');
             document.getElementById('qv-qr').onclick = () => {
-                if(qrCont.style.display === 'none') {
-                    qrCont.style.display = 'block';
+                qrCont.classList.toggle('hidden');
+                if(!qrCont.classList.contains('hidden')) {
                     qrDiv.innerHTML = '';
-                    new QRCode(qrDiv, { text: c.link, width: 150, height: 150, colorDark: "#000", colorLight: "#fff" });
-                } else { qrCont.style.display = 'none'; }
+                    new QRCode(qrDiv, { text: c.link, width: 160, height: 160, colorDark: "#000", colorLight: "#fff" });
+                }
             };
 
-            document.getElementById('modal-backdrop').classList.add('active');
+            const overlay = document.getElementById('modal-overlay');
+            const modal = document.getElementById('quickview-modal');
+            overlay.classList.remove('hidden');
+            setTimeout(() => { overlay.classList.remove('opacity-0'); modal.classList.remove('hidden'); modal.classList.remove('scale-95'); }, 10);
         }
 
-        function openNetworkModal() { document.getElementById('network-backdrop').classList.add('active'); }
-        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        function closeModals() {
+            const overlay = document.getElementById('modal-overlay');
+            const modal = document.getElementById('quickview-modal');
+            overlay.classList.add('opacity-0');
+            modal.classList.add('scale-95');
+            setTimeout(() => { overlay.classList.add('hidden'); modal.classList.add('hidden'); }, 300);
+        }
 
+        // 🌟 UTILITIES
         function toggleSave(e, id) {
             e.stopPropagation();
-            if(savedVault.includes(id)) {
-                savedVault = savedVault.filter(x => x !== id);
-                e.currentTarget.classList.remove('saved');
-                e.currentTarget.innerHTML = `<i class="fa-regular fa-bookmark"></i>`;
-            } else {
-                savedVault.push(id);
-                e.currentTarget.classList.add('saved');
-                e.currentTarget.innerHTML = `<i class="fa-solid fa-bookmark"></i>`;
-            }
-            localStorage.setItem('fho_vault_v2', JSON.stringify(savedVault));
+            if(savedVault.includes(id)) { savedVault = savedVault.filter(x => x !== id); showToast("Removed from Vault"); } 
+            else { savedVault.push(id); showToast("Saved to Vault", "fa-bookmark"); }
+            localStorage.setItem('fho_vault_v3', JSON.stringify(savedVault));
             if(showingVaultOnly) renderCourses(courses.filter(c => savedVault.includes(c.id)));
+            else loadCourses(); // re-render to update icon state
         }
 
         function toggleVaultView() {
             showingVaultOnly = !showingVaultOnly;
             const btn = document.getElementById('btn-vault');
             if(showingVaultOnly) {
-                btn.classList.add('active');
+                btn.classList.add('bg-brand-500', 'text-white', 'border-brand-500');
+                btn.classList.remove('bg-white', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300');
                 renderCourses(courses.filter(c => savedVault.includes(c.id)));
+                showToast("Viewing Personal Vault");
             } else {
-                btn.classList.remove('active');
+                btn.classList.remove('bg-brand-500', 'text-white', 'border-brand-500');
+                btn.classList.add('bg-white', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300');
                 renderCourses(courses);
             }
         }
 
-        // 6. SEARCH
+        function setViewMode(mode) {
+            viewMode = mode;
+            document.getElementById('btn-grid').className = mode === 'grid' ? 'w-8 h-8 rounded-full bg-white dark:bg-slate-700 text-brand-600 shadow-sm transition' : 'w-8 h-8 rounded-full text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition';
+            document.getElementById('btn-list').className = mode === 'list' ? 'w-8 h-8 rounded-full bg-white dark:bg-slate-700 text-brand-600 shadow-sm transition' : 'w-8 h-8 rounded-full text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition';
+            renderCourses(showingVaultOnly ? courses.filter(c => savedVault.includes(c.id)) : courses);
+        }
+
+        function showToast(msg, icon="fa-check-circle") {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `bg-slate-900 text-white dark:bg-white dark:text-slate-900 px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 animate-scale-in font-bold text-sm`;
+            toast.innerHTML = `<i class="fa-solid ${icon} text-brand-400 dark:text-brand-500"></i> ${msg}`;
+            container.appendChild(toast);
+            setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'scale(0.9)'; toast.style.transition = 'all 0.3s'; setTimeout(() => toast.remove(), 300); }, 2500);
+        }
+
+        // 🌟 SEARCH
         const searchInput = document.getElementById('searchInput');
         const suggestBox = document.getElementById('search-suggestions');
         
         searchInput.addEventListener('input', (e) => {
             const term = e.target.value.toLowerCase();
             if(!term) {
-                suggestBox.style.display = 'none';
+                suggestBox.classList.add('hidden');
                 renderCourses(showingVaultOnly ? courses.filter(c => savedVault.includes(c.id)) : courses);
                 return;
             }
@@ -697,22 +556,30 @@
             
             if(filtered.length > 0) {
                 suggestBox.innerHTML = filtered.slice(0, 5).map(c => 
-                    `<li onclick="openCourseModal('${c.id}', '${c.title.replace(/[^a-zA-Z0-9]/g, '').substring(0, 25)}'); document.getElementById('search-suggestions').style.display='none';">
-                        <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90%;">${c.title}</span>
-                        <i class="fa-solid fa-arrow-right" style="color: var(--accent-cyan);"></i>
+                    `<li onclick="openCourseModal('${c.id}', '${c.title.replace(/[^a-zA-Z0-9]/g, '').substring(0, 25)}', '${getCategoryGradient(c.category)}'); document.getElementById('search-suggestions').classList.add('hidden');" class="px-5 py-4 hover:bg-slate-50 dark:hover:bg-slate-700/50 border-b border-slate-100 dark:border-slate-700/50 cursor-pointer flex justify-between items-center transition-colors">
+                        <span class="font-bold text-sm text-slate-800 dark:text-slate-200 truncate">${c.title}</span>
+                        <i class="fa-solid fa-arrow-right text-xs text-brand-500"></i>
                     </li>`
                 ).join('');
-                suggestBox.style.display = 'block';
-            } else { suggestBox.style.display = 'none'; }
+                suggestBox.classList.remove('hidden');
+            } else { suggestBox.classList.add('hidden'); }
             
             renderCourses(filtered);
         });
 
-        document.addEventListener('click', (e) => {
-            if(!searchInput.contains(e.target) && !suggestBox.contains(e.target)) suggestBox.style.display = 'none';
-        });
+        document.addEventListener('click', (e) => { if(!searchInput.contains(e.target) && !suggestBox.contains(e.target)) suggestBox.classList.add('hidden'); });
 
-        // Start
+        // Useless Facts API
+        async function fetchTechFact() {
+            const factEl = document.getElementById('tech-fact');
+            try {
+                const res = await fetch('https://uselessfacts.jsph.pl/api/v2/facts/random');
+                const data = await res.json(); factEl.innerText = data.text;
+            } catch (e) { factEl.innerText = "Tip: Press Ctrl + Shift + T to reopen the last closed tab in your browser."; }
+        }
+        fetchTechFact(); setInterval(fetchTechFact, 15000);
+
+        // Init
         loadCourses();
     </script>
 </body>
